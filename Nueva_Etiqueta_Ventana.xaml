@@ -1,0 +1,35 @@
+﻿<Window x:Class="Encase_XS_WPF.Nueva_Etiqueta_Ventana"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Encase_XS_WPF"
+        mc:Ignorable="d"
+        Title="Nueva Etiqueta" Height="200" Width="400">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>            
+            <RowDefinition Height="*"/>            
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <TextBlock Text="Nombre: " FontSize="20"/>
+            <TextBox Width="200" FontSize="20" Name ="Nueva_Etiqueta_Nombre"/>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <TextBlock Text="Ancho: " FontSize="20"/>
+            <TextBox Name ="Ancho_Nueva_Etiqueta_WND" Text="57" Width="175"/>
+        </StackPanel>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <TextBlock Text="Alto: " FontSize="20"/>
+            <TextBox Name ="Alto_Nueva_Etiqueta_WND" Text="45" Width="175"/>            
+        </StackPanel>
+        <StackPanel Grid.Row="3" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" >
+            <Button x:Name="Aceptar_nueva_etiqueta" Content="Aceptar" FontSize="20" Margin="5" Click="Aceptar_nueva_etiqueta_Click"/>
+            <Button x:Name="Cancelar_nueva_etiqueta" Content="Cancelar" FontSize="20" Margin="5" Click="Cancelar_nueva_etiqueta_Click"/>
+        </StackPanel>
+        
+
+    </Grid>
+</Window>

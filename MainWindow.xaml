@@ -4,11 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        
         xmlns:diag="http://mindfusion.eu/diagramming/wpf"
         xmlns:local="clr-namespace:Encase_XS_WPF"
         xmlns:rulerControl="clr-namespace:RulerControl.Wpf;assembly=RulerControl.Wpf"
         mc:Ignorable="d"
-        Title="MainWindow" Height="1024" Width="1280" HorizontalContentAlignment="Stretch"  VerticalContentAlignment="Stretch" WindowState="Maximized" >
+        Title="MainWindow" Height="1024" Width="1280" HorizontalContentAlignment="Stretch"  VerticalContentAlignment="Stretch" WindowState="Maximized" 
+        KeyDown="Window_KeyDown">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -27,18 +29,16 @@
             </Style>
         </ResourceDictionary>
 
-    </Window.Resources>
-
+    </Window.Resources>  
     
-
     <Grid Margin="0,0,0,7">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="5*"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="83*"></RowDefinition>
-            <RowDefinition Height="494*"></RowDefinition>
+            <RowDefinition Height="70" MinHeight="70"></RowDefinition>
+            <RowDefinition Height="494*" ></RowDefinition>
         </Grid.RowDefinitions>
         <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Margin="2,2,2,2">
             <DockPanel Height="40">
@@ -73,6 +73,7 @@
                         <Button Content="Nueva Etiqueta" Name="Nueva_Etiqueta" Click="Nueva_Etiqueta_Click"/>
                         <Button Content="Abrir Etiqueta" Name="Abrir_Etiqueta" Click="Abrir_Etiqueta_Click"/>
                         <Button Content="Guardar Etiqueta" Name="Guardar_Etiqueta" Click="Guardar_Etiqueta_Click"/>
+                        <!--Botones relacionados con el diseño que en un fututo podrían implementarse-->
                         <!--<Separator/>
                         <Button Content="Añadir Diseño" Name="Add_Design" Click="Add_Design_Click"/>
                         <Button Content="Eliminar Diseño" Name="Delete_Design" Click="Delete_Design_Click" />-->
@@ -80,7 +81,7 @@
                         <Button Content="Añadir Texto" Name="Add_Texto" Click="Add_Texto_Click" />
                         <Button Content="Añadir Campo" Name="Add_Campo" Click="Add_Campo_Click" />
                         <Button Content="Añadir Cajeado" Name="Add_Cajeado" Click="Add_Cajeado_Click"/>
-                        <Button Content="Añadir Imagen" Name ="Add_Imagen" Click="Add_Imagen_Click" />
+                        <Button Content="Añadir Logo" Name ="Add_Imagen" Click="Add_Imagen_Click" />
                         <Button Content="Añadir Sello" Name="Add_Sello" Click="Add_Sello_Click"/>
                         <Button Content="Añadir Código de barras" Name="Add_Barcode" Click="Add_Barcode_Click"/>
                         <Separator/>
@@ -88,11 +89,10 @@
                 </Border>
             </DockPanel>
         </StackPanel>
-        <ScrollViewer Grid.RowSpan="2" Grid.Column="1">
-            <StackPanel Grid.Column="1" Background="LightSlateGray" Margin="0,67,0,0" Grid.RowSpan="2">
-                <Border  BorderThickness="1">
+        <ScrollViewer Grid.RowSpan="2" Grid.Column="1" Grid.Row="1">
+            <StackPanel Grid.Column="1" Background="LightSlateGray" Margin="0,0,0,0" Grid.RowSpan="2">
+                <Border  BorderThickness="1"  Grid.Column="1">
                     <TabControl TabStripPlacement="Top">
-
                         <TabItem Header="Objeto">
                             <DockPanel>
                                 <GroupBox Header="Geometría" DockPanel.Dock="Top">
@@ -165,7 +165,7 @@
                                 <Separator DockPanel.Dock="Top"/>
                                 <GroupBox Header="Estilo" DockPanel.Dock="Top">
                                     <StackPanel Orientation="Vertical">
-                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
+                                        <StackPanel Orientation="Horizontal" Name="sel_font_type" HorizontalAlignment="Center" Margin="5">
                                             <TextBlock Text="Fuente" FontSize="12" />
                                             <ComboBox >
                                                 <ComboBoxItem IsSelected="True" Content="Arial"/>
@@ -174,13 +174,23 @@
                                                 <ComboBoxItem Content="Times New Roman"/>
                                             </ComboBox>
                                         </StackPanel>
-                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
+                                        <StackPanel Orientation="Horizontal" Name="sel_font_size" HorizontalAlignment="Center" Margin="5">
                                             <TextBlock Text="Tamaño" FontSize="12" Name="Tamaño_Letra_Objeto"/>
                                             <xctk:IntegerUpDown/>
                                         </StackPanel>
-                                        <StackPanel Orientation="Horizontal" Margin="5" HorizontalAlignment="Center">
+                                        <StackPanel Orientation="Horizontal" Name="sel_neg_curs" Margin="5" HorizontalAlignment="Center">
                                             <CheckBox Content="Negrita"></CheckBox>
                                             <CheckBox Content="Cursiva"></CheckBox>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Name="border_thin_selector" HorizontalAlignment="Center" Margin="5" Visibility="Hidden">
+                                            <TextBlock Text="Grosor de cajeado: "/>
+                                            <ComboBox >
+                                                <ComboBoxItem IsSelected="True" Content="1" Name="border_thin_1" Selected="border_thin_1_Selected"/>
+                                                <ComboBoxItem Content="2" Name="border_thin_2" Selected="border_thin_2_Selected"/>
+                                                <ComboBoxItem Content="3" Name="border_thin_3" Selected="border_thin_3_Selected"/>
+                                                <ComboBoxItem Content="4" Name="border_thin_4" Selected="border_thin_4_Selected"/>
+                                                <ComboBoxItem Content="5" Name="border_thin_5" Selected="border_thin_5_Selected"/>
+                                            </ComboBox>
                                         </StackPanel>
                                     </StackPanel>
                                 </GroupBox>
@@ -188,8 +198,9 @@
                                 <GroupBox Header="Propiedades">
                                     <StackPanel Orientation="Vertical">
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
-                                            <TextBlock Text="Texto" FontSize="12"/>
-                                            <TextBox/>
+                                            <TextBlock Text="Texto: " FontSize="12"/>
+                                            <TextBox Name="Text_tb" TextChanged="Text_tb_TextChanged"  Width="70"
+                                                     KeyDown="Text_tb_KeyDown" />
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
                                             <TextBlock Text="ID" FontSize="12"/>
@@ -244,7 +255,8 @@
                                 </GroupBox>
                             </DockPanel>
                         </TabItem>
-                        <TabItem Header="Diseño">
+                        <!--Tab de diseño eliminado aunque en un futuro podría usarse-->
+                        <!--<TabItem Header="Diseño">
                             <DockPanel>
                                 <GroupBox DockPanel.Dock="Top">
                                     <StackPanel Orientation="Vertical">
@@ -316,7 +328,7 @@
                                     </StackPanel>
                                 </GroupBox>
                             </DockPanel>
-                        </TabItem>
+                        </TabItem>-->
                         <TabItem Header="Documento">
                             <DockPanel>
                                 <GroupBox DockPanel.Dock="Top">
@@ -332,19 +344,21 @@
                                     <StackPanel Orientation="Vertical">
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
                                             <TextBlock Text="Ancho: " FontSize="12"/>
-                                            <xctk:UIntegerUpDown Text="0"/>
+                                            <xctk:UIntegerUpDown Text="0" Name="Document_Width" ValueChanged="Document_Width_ValueChanged"/>
                                             <TextBlock Text="mm" FontSize="12"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
                                             <TextBlock Text="Alto: " FontSize="12"/>
-                                            <xctk:UIntegerUpDown Text="0"/>
+                                            <xctk:UIntegerUpDown Text="0" Name="Document_Height" ValueChanged="Document_Height_ValueChanged"/>
                                             <TextBlock Text="mm" FontSize="12"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
                                             <TextBlock Text="Orientación: " FontSize="12"/>
                                             <ComboBox>
-                                                <ComboBoxItem Content="Horizontal" />
-                                                <ComboBoxItem Content="Vertical" IsSelected="True"/>
+                                                <ComboBoxItem Content="Horizontal" Name="document_Horizontal" 
+                                                              Selected="document_Horizontal_Selected"/>
+                                                <ComboBoxItem Content="Vertical" IsSelected="True" Name="document_Vertical"
+                                                              Selected="document_Vertical_Selected"/>
                                             </ComboBox>
                                         </StackPanel>
                                     </StackPanel>
@@ -354,16 +368,15 @@
                     </TabControl>
                 </Border>
             </StackPanel>
-        </ScrollViewer>
 
-        <ScrollViewer Grid.Column="0" Grid.Row="1">
-            <StackPanel Grid.Column="0" Grid.Row="1" Margin="10,10,10,10" Background="CadetBlue" >
+        </ScrollViewer>        
+        <StackPanel Grid.Column="0" Grid.Row="1" Margin="10,10,10,10" Background="CadetBlue" >
                 <TabControl Name="TbtMain" Background="CadetBlue" Height="1850" >
                     <TabItem Name="Tbt1" 
-                         Width="70"
-                         Height="20"
-                         Header="HEIGHT"
-                         >
+                             Width="70"
+                             Height="20"
+                             Header="HEIGHT">
+
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="15"/>
@@ -411,22 +424,22 @@
                             </StackPanel>
 
                             <StackPanel Margin="10" Name="Design_Frame1" Background="CadetBlue"  Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2">
+                                
+                                    <Canvas x:Name="cnv1"
+                                            MaxWidth="960"
+                                            MaxHeight="960"
+                                            ClipToBounds="true"
+                                            MouseMove="cnv1_MouseMove">
 
-
-                                <Canvas Name="cnv1"
-                        MaxWidth="960"
-                        MaxHeight="960"
-                        ClipToBounds="true">
-
-                                </Canvas>
+                                    </Canvas>
                             </StackPanel>
                         </Grid>
 
                     </TabItem>
                     <TabItem Name="Tbt2" 
-                         Width="70"
-                         Height="20"
-                         Header="RESUME">
+                             Width="70"
+                             Height="20"
+                             Header="RESUME">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="15"/>
@@ -439,9 +452,10 @@
                             </Grid.RowDefinitions>
                             <StackPanel Grid.Column="1" Grid.ColumnSpan="3">
                                 <rulerControl:Ruler Height="15" MarkerControlReference="{Binding ElementName=mainView}" 
-                                                Name="ruler2h"
-                                                MaxValue="200" Width="1645" MaxWidth="1800"
-                                                Grid.Column="1" Grid.ColumnSpan="3" HorizontalAlignment="Left">
+                                                    Name="ruler2h"
+                                                    Margin="5, 0, 0, 0"
+                                                    MaxValue="200" Width="1645" MaxWidth="1800"
+                                                    Grid.Column="1" Grid.ColumnSpan="3" HorizontalAlignment="Left">
                                     <rulerControl:Ruler.Resources>
                                         <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
                                             <Setter Property="Margin" Value="5 0"/>
@@ -452,14 +466,12 @@
 
                             <StackPanel Orientation="Vertical" Grid.Row="1">
                                 <rulerControl:Ruler Grid.Row="1"
-                                                 Name="ruler2v"
-                                                 Margin="0,5,0,0"
-                                                 Height="1640"
-                                               
-                                                 Position="Left"
-                                                 MarkerControlReference="{Binding ElementName=mainView}"
-                                                 MaxValue="200"
-                                                 >
+                                                    Name="ruler2v"
+                                                    Margin="0,5,0,0"
+                                                    Height="1640"                                               
+                                                    Position="Left"
+                                                    MarkerControlReference="{Binding ElementName=mainView}"
+                                                    MaxValue="200">
                                     <rulerControl:Ruler.Resources>
                                         <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
                                             <Setter Property="Foreground" Value="Black"/>
@@ -473,16 +485,19 @@
 
 
                             </StackPanel>
+                            
 
                             <StackPanel Margin="10" Name="Design_Frame2" Background="CadetBlue"  Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2">
 
 
-                                <Canvas Name="cnv2"
+                                <Canvas x:Name="cnv2"
                                     MaxWidth="960"
                                     MaxHeight="960"
-                                    ClipToBounds="true">
+                                    ClipToBounds="true" MouseMove="cnv2_MouseMove">
 
                                 </Canvas>
+
+
                             </StackPanel>
                         </Grid>
                     </TabItem>
@@ -491,11 +506,6 @@
                 </TabControl>
 
 
-            </StackPanel>
-        </ScrollViewer>
-        
-
+            </StackPanel> 
     </Grid>
-
-
 </Window>

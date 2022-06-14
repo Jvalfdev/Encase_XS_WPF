@@ -3,8 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"        
         xmlns:diag="http://mindfusion.eu/diagramming/wpf"
         xmlns:local="clr-namespace:Encase_XS_WPF"
         xmlns:rulerControl="clr-namespace:RulerControl.Wpf;assembly=RulerControl.Wpf"
@@ -29,8 +28,7 @@
             </Style>
         </ResourceDictionary>
 
-    </Window.Resources>  
-    
+    </Window.Resources>      
     <Grid Margin="0,0,0,7">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="5*"></ColumnDefinition>
@@ -143,30 +141,39 @@
                                             <RowDefinition/>
                                             <RowDefinition/>
                                         </Grid.RowDefinitions>
-                                        <Button Grid.Column="0" Grid.Row="0" Content="Izquierda-Arriba"/>
-                                        <Button Grid.Column="1" Grid.Row="0" Content="Centro-Arriba"/>
-                                        <Button Grid.Column="2" Grid.Row="0" Content="Derecha-Arriba"/>
-                                        <Button Grid.Column="0" Grid.Row="1" Content="Izquierda-Centro"/>
-                                        <Button Grid.Column="1" Grid.Row="1" Content="Centro-Centro"/>
-                                        <Button Grid.Column="2" Grid.Row="1" Content="Derecha-Centro"/>
-                                        <Button Grid.Column="0" Grid.Row="2" Content="Izquierda-Abajo"/>
-                                        <Button Grid.Column="1" Grid.Row="2" Content="Centro-Abajo"/>
-                                        <Button Grid.Column="2" Grid.Row="2" Content="Derecha-Abajo"/>
+                                        <Button Grid.Column="0" Grid.Row="0" Content="Izquierda-Arriba"
+                                                Name="Iz_Arr" Click="Iz_Arr_Click"/>
+                                        <Button Grid.Column="1" Grid.Row="0" Content="Centro-Arriba"
+                                                Name="cen_arr" Click="cen_arr_Click"/>
+                                        <Button Grid.Column="2" Grid.Row="0" Content="Derecha-Arriba"
+                                                Name="Der_Arr" Click="Der_Arr_Click"/>
+                                        <Button Grid.Column="0" Grid.Row="1" Content="Izquierda-Centro"
+                                                Name="izq_cen" Click="izq_cen_Click"/>
+                                        <Button Grid.Column="1" Grid.Row="1" Content="Centro-Centro"
+                                                Name="cen_cen" Click="cen_cen_Click"/>
+                                        <Button Grid.Column="2" Grid.Row="1" Content="Derecha-Centro"
+                                                Name="der_cen" Click="der_cen_Click"/>
+                                        <Button Grid.Column="0" Grid.Row="2" Content="Izquierda-Abajo"
+                                                Name="izq_ab" Click="izq_ab_Click"/>
+                                        <Button Grid.Column="1" Grid.Row="2" Content="Centro-Abajo"
+                                                Name="cen_ab" Click="cen_ab_Click"/>
+                                        <Button Grid.Column="2" Grid.Row="2" Content="Derecha-Abajo"
+                                                Name="der_ab" Click="der_ab_Click"/>
                                     </Grid>
                                 </GroupBox>
                                 <Separator DockPanel.Dock="Top"/>
-                                <GroupBox Header="Alineación" DockPanel.Dock="Top">
+                                <GroupBox Header="Alineación" DockPanel.Dock="Top" Name="alignment_toolbar"  IsEnabled="False">
                                     <StackPanel Orientation="Horizontal">
-                                        <CheckBox Content="Izquierda"></CheckBox>
-                                        <CheckBox Content="Centro"></CheckBox>
-                                        <CheckBox Content="Derecha"></CheckBox>
+                                        <CheckBox Content="Izquierda" Name="align_con_iz" Checked="align_con_iz_Checked"/>
+                                        <CheckBox Content="Centro" Name="align_con_cen" Checked="align_con_cen_Checked"/>
+                                        <CheckBox Content="Derecha" Name="align_con_der" Checked="align_con_der_Checked"/>
                                     </StackPanel>
                                 </GroupBox>
                                 <Separator DockPanel.Dock="Top"/>
                                 <GroupBox Header="Estilo" DockPanel.Dock="Top">
                                     <StackPanel Orientation="Vertical">
                                         <StackPanel Orientation="Horizontal" Name="sel_font_type" HorizontalAlignment="Center" Margin="5">
-                                            <TextBlock Text="Fuente" FontSize="12" />
+                                            <TextBlock Text="Fuente" FontSize="12"/>
                                             <ComboBox >
                                                 <ComboBoxItem IsSelected="True" Content="Arial"/>
                                                 <ComboBoxItem Content="Calibri"/>
@@ -182,7 +189,7 @@
                                             <CheckBox Content="Negrita"></CheckBox>
                                             <CheckBox Content="Cursiva"></CheckBox>
                                         </StackPanel>
-                                        <StackPanel Orientation="Horizontal" Name="border_thin_selector" HorizontalAlignment="Center" Margin="5" Visibility="Hidden">
+                                        <StackPanel Orientation="Horizontal" Name="border_thin_selector" HorizontalAlignment="Center" Margin="5" >
                                             <TextBlock Text="Grosor de cajeado: "/>
                                             <ComboBox >
                                                 <ComboBoxItem IsSelected="True" Content="1" Name="border_thin_1" Selected="border_thin_1_Selected"/>
@@ -195,18 +202,21 @@
                                     </StackPanel>
                                 </GroupBox>
                                 <Separator DockPanel.Dock="Top"/>
-                                <GroupBox Header="Propiedades">
+                                <GroupBox Header="Propiedades" DockPanel.Dock="Top">
                                     <StackPanel Orientation="Vertical">
-                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
+                                        <StackPanel Name="sel_prop_text" IsEnabled="False"
+                                                    Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
                                             <TextBlock Text="Texto: " FontSize="12"/>
                                             <TextBox Name="Text_tb" TextChanged="Text_tb_TextChanged"  Width="70"
                                                      KeyDown="Text_tb_KeyDown" />
                                         </StackPanel>
-                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
+                                        <StackPanel Name="sel_prop_id" IsEnabled="False"
+                                                    Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
                                             <TextBlock Text="ID" FontSize="12"/>
                                             <xctk:IntegerUpDown/>
                                         </StackPanel>
-                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
+                                        <StackPanel Name="sel_prop_campo" IsEnabled="False"
+                                                    Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
                                             <TextBlock Text="Campo" FontSize="12"/>
                                             <ComboBox>
                                                 <ComboBoxItem Content="line.SaleForm"/>
@@ -232,7 +242,8 @@
                                                 <ComboBoxItem Content="header.Text"/>
                                             </ComboBox>
                                         </StackPanel>
-                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
+                                        <StackPanel Name="sel_prop_tipo" IsEnabled="False"
+                                                    Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
                                             <TextBlock Text="Tipo" FontSize="12"/>
                                             <ComboBox>
                                                 <ComboBoxItem Content="Logo" IsSelected="True"/>
@@ -241,15 +252,80 @@
                                                 <ComboBoxItem Content="Cajeado"/>
                                             </ComboBox>
                                         </StackPanel>
-                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
+                                        <StackPanel Name="sel_prop_barcode" IsEnabled="False"
+                                                    Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
                                             <TextBlock Text="Código de barras" FontSize="12"/>
                                             <ComboBox>
-                                                <ComboBoxItem Content="EAN-8" IsSelected="True"/>
-                                                <ComboBoxItem Content="EAN-13"/>
-                                                <ComboBoxItem Content="EAN-14"/>
-                                                <ComboBoxItem Content="Code39"/>
-                                                <ComboBoxItem Content="Code128"/>
+                                                <ComboBoxItem Content="EAN-8" Name="barcode_ean8" Selected="barcode_ean8_Selected" />
+                                                <ComboBoxItem Content="EAN-13" Name="barcode_ean13" Selected="barcode_ean13_Selected"  IsSelected="True"/>
+                                                <ComboBoxItem Content="EAN-14" Name="barcode_ean14" Selected="barcode_ean14_Selected"/>
+                                                <ComboBoxItem Content="Code39" Name="barcode_code39" Selected="barcode_code39_Selected"/>
+                                                <ComboBoxItem Content="Code128" Name="barcode_code128" Selected="barcode_code128_Selected"/>
                                             </ComboBox>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </GroupBox>
+                                <Separator DockPanel.Dock="Top"/>
+                                <GroupBox Header="Condición" Name="condition_toolbar" IsEnabled="False">
+                                    <StackPanel Orientation="Vertical">
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                            <TextBlock Text="Campo: "></TextBlock>
+                                            <ComboBox>
+                                                <ComboBoxItem Content="line.SaleForm" IsSelected="True"
+                                                              Name="cond_line_saleform" Selected="cond_line_saleform_Selected"/>
+                                                <ComboBoxItem Content="line.ItemName"
+                                                              Name="cond_line_itemName" Selected="cond_line_itemName_Selected"/>
+                                                <ComboBoxItem Content="line.Description"
+                                                              Name="cond_line_description" Selected="cond_line_description_Selected"/>
+                                                <ComboBoxItem Content="line.NutritionalInfo"
+                                                              Name="cond_line_NutInfo" Selected="cond_line_NutInfo_Selected"/>
+                                                <ComboBoxItem Content="line.TraceInfo"
+                                                              Name="cond_line_TraceInfo" Selected="cond_line_TraceInfo_Selected"/>
+                                                <ComboBoxItem Content="line.Units"
+                                                              Name="cond_line_units" Selected="cond_line_units_Selected"/>
+                                                <ComboBoxItem Content="line.Price"
+                                                              Name="cond_line_price" Selected="cond_line_price_Selected"/>
+                                                <ComboBoxItem Content="line.Weight"
+                                                              Name="cond_line_weight" Selected="cond_line_weight_Selected"/>
+                                                <ComboBoxItem Content="line.Amount"
+                                                              Name="cond_line_amount" Selected="cond_line_amount_Selected"/>
+                                                <ComboBoxItem Content="line.OffDescription"
+                                                              Name="cond_line_OffDesc" Selected="cond_line_OffDesc_Selected"/>
+                                                <ComboBoxItem Content="line.OffImport"
+                                                              Name="cond_line_OffImp" Selected="cond_line_OffImp_Selected"/>
+                                                <ComboBoxItem Content="line.PackingDate"
+                                                              Name="cond_line_Pack" Selected="cond_line_Pack_Selected"/>
+                                                <ComboBoxItem Content="line.ExpiringDate"
+                                                              Name="cond_line_Expiring" Selected="cond_line_Expiring_Selected"/>
+                                                <ComboBoxItem Content="line.PreferingDate"
+                                                              Name="cond_line_pref" Selected="cond_line_pref_Selected"/>
+                                                <ComboBoxItem Content="line.Lote"
+                                                              Name="cond_line_lote" Selected="cond_line_lote_Selected"/>
+                                                <ComboBoxItem Content="line.Order"
+                                                              Name="cond_line_order" Selected="cond_line_order_Selected"/>
+                                                <ComboBoxItem Content="total.Weight"
+                                                              Name="cond_total_weight" Selected="cond_total_weight_Selected"/>
+                                                <ComboBoxItem Content="total.Amount"
+                                                              Name="cond_total_amount" Selected="cond_total_amount_Selected"/>
+                                                <ComboBoxItem Content="total.Units"
+                                                              Name="cond_total_units" Selected="cond_total_units_Selected"/>
+                                                <ComboBoxItem Content="total.Operations"
+                                                              Name="cond_total_operations" Selected="cond_total_operations_Selected"/>
+                                                <ComboBoxItem Content="header.Text" 
+                                                              Name="cond_header_text" Selected="cond_header_text_Selected"/>
+                                            </ComboBox>
+                                            
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                            <ComboBox>
+                                                <ComboBoxItem Content="Ninguna" IsSelected="True" Name="cond_none" Selected="cond_none_Selected"/>
+                                                <ComboBoxItem Content="Igual" Name="cond_same" Selected="cond_same_Selected"/>
+                                                <ComboBoxItem Content="Distinto" Name="cond_dist" Selected="cond_dist_Selected"/>
+                                            </ComboBox>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                            <TextBlock Text="Valor: "/>
+                                            <TextBox Width="80" Name="cond_value" TextChanged="cond_value_TextChanged"/>
                                         </StackPanel>
                                     </StackPanel>
                                 </GroupBox>
@@ -368,7 +444,6 @@
                     </TabControl>
                 </Border>
             </StackPanel>
-
         </ScrollViewer>        
         <StackPanel Grid.Column="0" Grid.Row="1" Margin="10,10,10,10" Background="CadetBlue" >
                 <TabControl Name="TbtMain" Background="CadetBlue" Height="1850" >

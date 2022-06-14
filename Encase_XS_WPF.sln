@@ -5,7 +5,7 @@ VisualStudioVersion = 17.1.32319.34
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Encase_XS_WPF", "Encase_XS_WPF.csproj", "{BC148619-B0E9-4108-9799-8E81138F7095}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RulerControl.Wpf", "..\..\..\OneDrive - Grupo Epelsa\Escritorio\Ruler.Wpf-master\src\RulerControl.Wpf\RulerControl.Wpf.csproj", "{5D844A21-40C4-4FCB-98D4-9CDDDB0A8DBF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RulerControl.Wpf", "Ruler.Wpf-master\src\RulerControl.Wpf\RulerControl.Wpf.csproj", "{470F3420-5973-4AF7-90A0-14ECA743D5D7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,13 +23,14 @@ Global
 		{BC148619-B0E9-4108-9799-8E81138F7095}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BC148619-B0E9-4108-9799-8E81138F7095}.Release|x86.ActiveCfg = Release|Any CPU
 		{BC148619-B0E9-4108-9799-8E81138F7095}.Release|x86.Build.0 = Release|Any CPU
-		{5D844A21-40C4-4FCB-98D4-9CDDDB0A8DBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5D844A21-40C4-4FCB-98D4-9CDDDB0A8DBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5D844A21-40C4-4FCB-98D4-9CDDDB0A8DBF}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{5D844A21-40C4-4FCB-98D4-9CDDDB0A8DBF}.Debug|x86.Build.0 = Debug|Any CPU
-		{5D844A21-40C4-4FCB-98D4-9CDDDB0A8DBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5D844A21-40C4-4FCB-98D4-9CDDDB0A8DBF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5D844A21-40C4-4FCB-98D4-9CDDDB0A8DBF}.Release|x86.ActiveCfg = Release|Any CPU
+		{470F3420-5973-4AF7-90A0-14ECA743D5D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{470F3420-5973-4AF7-90A0-14ECA743D5D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{470F3420-5973-4AF7-90A0-14ECA743D5D7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{470F3420-5973-4AF7-90A0-14ECA743D5D7}.Debug|x86.Build.0 = Debug|Any CPU
+		{470F3420-5973-4AF7-90A0-14ECA743D5D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{470F3420-5973-4AF7-90A0-14ECA743D5D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{470F3420-5973-4AF7-90A0-14ECA743D5D7}.Release|x86.ActiveCfg = Release|Any CPU
+		{470F3420-5973-4AF7-90A0-14ECA743D5D7}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

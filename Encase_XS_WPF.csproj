@@ -248,8 +248,8 @@
     <Resource Include="Resource\text-label.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\OneDrive - Grupo Epelsa\Escritorio\Ruler.Wpf-master\src\RulerControl.Wpf\RulerControl.Wpf.csproj">
-      <Project>{5d844a21-40c4-4fcb-98d4-9cdddb0a8dbf}</Project>
+    <ProjectReference Include="Ruler.Wpf-master\src\RulerControl.Wpf\RulerControl.Wpf.csproj">
+      <Project>{470f3420-5973-4af7-90a0-14eca743d5d7}</Project>
       <Name>RulerControl.Wpf</Name>
     </ProjectReference>
   </ItemGroup>

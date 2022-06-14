@@ -1,0 +1,143 @@
+﻿<Window x:Class="RulerControl.Test.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:rulerControl="clr-namespace:RulerControl.Wpf;assembly=RulerControl.Wpf"
+        mc:Ignorable="d"
+        Title="Ruler Tests" Height="700" Width="800" x:Name="mainView">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/RulerControl.Wpf;component/RulerStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style TargetType="GroupBox" BasedOn="{StaticResource {x:Type GroupBox}}">
+                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                <Setter Property="Margin" Value="0 10"/>
+                <Setter Property="Padding" Value="10"/>
+            </Style>
+
+            <Style x:Key="HearderTextboxStyle" TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Setter Property="DockPanel.Dock" Value="Left"/>
+                <Setter Property="Width" Value="100"/>
+            </Style>
+        </ResourceDictionary>
+
+    </Window.Resources>
+    <Grid Margin="5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="40"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <rulerControl:Ruler x:Name="topRuler"
+                     Grid.Column="1"
+                     VerticalAlignment="Stretch"
+                     HorizontalAlignment="Stretch" 
+                     MarkerControlReference="{Binding ElementName=mainView}"
+                     MaxValue="{Binding ElementName=maxTopValueSlider, Path=Value, Delay=5}"
+                     MajorStepValues="{Binding MajorStep}"
+                     ValueStepTransform="{Binding ValueStepTransform}">
+            <rulerControl:Ruler.Resources>
+                <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                    <Setter Property="Margin" Value="5 0"/>
+                </Style>
+            </rulerControl:Ruler.Resources>
+        </rulerControl:Ruler>
+
+        <rulerControl:Ruler Grid.Row="1"
+                     DisplayZeroLine="True"
+                     VerticalAlignment="Stretch"
+                     Position="Left"
+                     MarkerControlReference="{Binding ElementName=mainView}"
+                     MaxValue="{Binding ElementName=maxLeftValueSlider, Path=Value, Delay=5}"
+                     MinorStepRatio="0.1"
+                     MajorStepValues="{Binding MajorStep}">
+            <rulerControl:Ruler.Resources>
+                <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                    <Setter Property="Foreground" Value="Blue"/>
+                    <Setter Property="LineHeight" Value="12"/>
+                    <Setter Property="LineStackingStrategy" Value="BlockLineHeight"/>
+                    <Setter Property="Margin" Value="2 5"/>
+                    <Setter Property="FontSize" Value="10"/>
+                </Style>
+            </rulerControl:Ruler.Resources>
+        </rulerControl:Ruler>
+
+        <StackPanel Grid.Column="1" Grid.Row="1" Margin="10" HorizontalAlignment="Stretch">
+            <GroupBox Header="Reference ">
+                <Slider Minimum="1" Maximum="200" Value="100" />
+            </GroupBox>
+            <GroupBox Header="Top Ruler">
+                <StackPanel>
+                    <DockPanel HorizontalAlignment="Stretch" >
+                        <TextBlock Text="Max Value : " Style="{StaticResource HearderTextboxStyle}"/>
+                        <TextBlock Text="{Binding ElementName=maxTopValueSlider, Path=Value, StringFormat=N2}" DockPanel.Dock="Right" Margin="5 0" Width="50"/>
+                        <Slider x:Name="maxTopValueSlider" Minimum="1" Maximum="200" Value="100" DockPanel.Dock="Left" />
+                    </DockPanel>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="Step transform:"/>
+                        <TextBlock Text="{Binding Unit}" Margin="10 0"/>
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Header="Left Ruler">
+                <DockPanel HorizontalAlignment="Stretch" >
+                    <TextBlock Text="Max Value : " Style="{StaticResource HearderTextboxStyle}"/>
+                    <TextBlock Text="{Binding ElementName=maxLeftValueSlider, Path=Value, StringFormat=N2}" DockPanel.Dock="Right" Margin="5 0" Width="50"/>
+                    <Slider x:Name="maxLeftValueSlider" Minimum="1" Maximum="200" Value="100" DockPanel.Dock="Left" />
+                </DockPanel>
+            </GroupBox>
+            <GroupBox Header="Slave">
+                <rulerControl:Ruler SlaveStepProperties="{Binding ElementName=topRuler, Path=StepProperties, Delay=5}" 
+                             Margin="40 0" Height="40" 
+                             StepColor="Orange"
+                             Foreground="White"
+                             Background="Black"
+                             TextFormat="N2"/>
+            </GroupBox>
+
+            <GroupBox Header="Cultures">
+                <GroupBox.Resources>
+                    <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                        <Setter Property="DockPanel.Dock" Value="Left"/>
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                        <Setter Property="Width" Value="50"/>
+                    </Style>
+
+                    <Style TargetType="DockPanel" >
+                        <Setter Property="Margin" Value="0 10"/>
+                    </Style>
+
+                    <Style TargetType="rulerControl:Ruler" BasedOn="{StaticResource {x:Type rulerControl:Ruler}}">
+                        <Setter Property="MaxValue" Value="100000"/>
+                        <Setter Property="MajorStepValues" Value="{Binding MajorStep}"/>
+                        <Setter Property="Margin" Value="10 0" />
+                        <Setter Property="Height" Value="25"/>
+                        <Setter Property="DockPanel.Dock" Value="Right"/>
+                    </Style>
+                </GroupBox.Resources>
+                <StackPanel>
+                    <DockPanel>
+                        <TextBlock Text="US"/>
+                        <rulerControl:Ruler TextCulture="{Binding CultureUs}" />
+                    </DockPanel>
+                    <DockPanel>
+                        <TextBlock Text="FR"/>
+                        <rulerControl:Ruler TextCulture="{Binding CultureFr}" />
+                    </DockPanel>
+                    <DockPanel>
+                        <TextBlock Text="Custom"/>
+                        <rulerControl:Ruler TextCulture="{Binding CultureCustom}" />
+                    </DockPanel>
+                </StackPanel>
+            </GroupBox>
+        </StackPanel>
+    </Grid>
+</Window>

@@ -39,6 +39,7 @@ namespace Encase_XS_WPF
             public Grid widget;
 
             //public Label widget;
+
             public int section_id;
             public string orientation;
             public string font;
@@ -53,6 +54,7 @@ namespace Encase_XS_WPF
 
             public int id;
             public int idCount;
+            public string barcode_type;
             
             public bool cond_enable;
             public string condition;
@@ -148,7 +150,7 @@ namespace Encase_XS_WPF
             
         }
         #endregion
-        #region Eventos botones principales
+        #region Eventos botones principales //Eventos de los principales botones de creación de objetos
         private void Nueva_Etiqueta_Click(object sender, RoutedEventArgs e)//Abre la Ventana de creación de etiqueta
         {
             Nueva_Etiqueta_Ventana nueva_Etiqueta_Ventana = new Nueva_Etiqueta_Ventana(m_ancho_Etiqueta, m_alto_Etiqueta, m_nombre_Etiqueta);
@@ -198,11 +200,48 @@ namespace Encase_XS_WPF
                     {
                         if (m_lstLabels[idx].type == types_items.lbl)
                         {
-                            l_fsXML.WriteLine("\t\t\t\t<item type=\"label\" x=\"" + Convert.ToString(PosX) + "\" y=\"" + Convert.ToString(PosY) + "\" alignment=\"center\" width=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Width)) + "\" height=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Height)) + "\" font=\""+ m_lstLabels[idx].font+" "+ m_lstLabels[idx].font_size + "\">" + m_lstLabels[idx].widget.Children.OfType<TextBlock>().First().Text + "</item>");
+                            if (m_lstLabels[idx].condition != "none")
+                            {
+                                l_fsXML.WriteLine("\t\t\t<if condition=\"" + m_lstLabels[idx].condition + "\" resource1=\"" + m_lstLabels[idx].cond_resource + "\" value2=\"" + m_lstLabels[idx].cond_value + "\">");
+                            
+                                l_fsXML.WriteLine("\t\t\t\t<item type=\"label\" x=\"" + Convert.ToString(PosX) + "\" y=\"" + Convert.ToString(PosY) + "\" alignment=\"center\" width=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Width)) + "\" height=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Height)) + "\" font=\""+ m_lstLabels[idx].font+" "+ m_lstLabels[idx].font_size + "\">" + m_lstLabels[idx].widget.Children.OfType<TextBlock>().First().Text + "</item>");
+                            
+                                l_fsXML.WriteLine("\t\t\t</if>");
+                            }
+                            else
+                            {
+                                l_fsXML.WriteLine("\t\t\t<item type=\"label\" x=\"" + Convert.ToString(PosX) + "\" y=\"" + Convert.ToString(PosY) + "\" alignment=\"center\" width=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Width)) + "\" height=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Height)) + "\" font=\"" + m_lstLabels[idx].font + " " + m_lstLabels[idx].font_size + "\">" + m_lstLabels[idx].widget.Children.OfType<TextBlock>().First().Text + "</item>");
+
+                            }
                         }
                         if (m_lstLabels[idx].type == types_items.box)
                         {
                             l_fsXML.WriteLine("\t\t\t<item type=\"shape\" x=\"" + Convert.ToString(PosX) + "\" y=\"" + Convert.ToString(PosY) + "\" width=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Width)) + "\" height=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Height)) + "\" line_width=\"" + Decimal.Truncate((decimal)m_lstLabels[idx].widget.Children.OfType<Rectangle>().First().StrokeThickness) + "\"></item>");
+                        }
+                        if (m_lstLabels[idx].type == types_items.barcode)
+                        {
+                            string barcode_type_H = "";
+                            switch (m_lstLabels[idx].barcode_type)
+                            {
+                                case "ean8":
+                                    barcode_type_H = "header.EAN8";
+                                    break;
+                                case "ean13":
+                                    barcode_type_H = "header.EAN13";
+                                    break;
+                                case "ean14":
+                                    barcode_type_H = "header.EAN14";
+                                    break;
+                                case "code39":
+                                    barcode_type_H = "header.CODE39";//Quizas no sea este, consultar con carlos
+                                    break;
+                                case "code128":
+                                    barcode_type_H = "header.CODE128";
+                                    break;
+
+                            }
+                            l_fsXML.WriteLine("\t\t\t<item type=\"barcode\" id=\"-1\" resource=\"" + barcode_type_H + "\" barcode_type=\""+ m_lstLabels[idx].barcode_type + "\" alignment=\"\" orientation =\"\"  x=\"" + Convert.ToString(PosX) + "\" y=\"" + Convert.ToString(PosY) + "\" width=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Width)) + "\" height=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Height)) + "\"></item>");
+
                         }
                     }
                 }
@@ -228,6 +267,31 @@ namespace Encase_XS_WPF
                         {
                             l_fsXML.WriteLine("\t\t\t<item type=\"shape\" x=\"" + Convert.ToString(PosX) + "\" y=\"" + Convert.ToString(PosY) + "\" width=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Width)) + "\" height=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Height)) + "\" line_width=\"" + Decimal.Truncate((decimal)m_lstLabels[idx].widget.Children.OfType<Rectangle>().First().StrokeThickness) + "\"></item>");
                         }
+                        if (m_lstLabels[idx].type == types_items.barcode)
+                        {
+                            string barcode_type_H = "";
+                            switch (m_lstLabels[idx].barcode_type)
+                            {
+                                case "ean8":
+                                    barcode_type_H = "header.EAN8";
+                                    break;
+                                case "ean13":
+                                    barcode_type_H = "header.EAN13";
+                                    break;
+                                case "ean14":
+                                    barcode_type_H = "header.EAN14";
+                                    break;
+                                case "code39":
+                                    barcode_type_H = "header.CODE39";//Quizas no sea este, consultar con carlos
+                                    break;
+                                case "code128":
+                                    barcode_type_H = "header.CODE128";
+                                    break;
+
+                            }
+                            l_fsXML.WriteLine("\t\t\t<item type=\"barcode\" id=\"-1\" resource=\"" + barcode_type_H + "\" barcode_type=\"" + m_lstLabels[idx].barcode_type + "\" alignment=\"\" orientation =\"\"  x=\"" + Convert.ToString(PosX) + "\" y=\"" + Convert.ToString(PosY) + "\" width=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Width)) + "\" height=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Height)) + "\"></item>");
+
+                        }                        
                     }
                 }
                 l_fsXML.WriteLine("</section>");
@@ -245,9 +309,16 @@ namespace Encase_XS_WPF
         }
         private void Add_Texto_Click(object sender, RoutedEventArgs args)
         {
+            for (int i = 0; i < m_lstLabels.Count(); i++)
+            {
+                label_item lbl = m_lstLabels[i];
+                lbl.is_selected = false;
+                lbl.widget.Background = Brushes.Transparent;
+                lbl.widget.Opacity = 1;
+                m_lstLabels[i] = lbl;
+            }
             if (Tbt1.IsSelected || Tbt2.IsSelected)//Solo actúa si uno de los dos 'tabs' está seleccionado
             {
-                
                 label_item l_lblitAux = new label_item();//Crea la struct del objeto
                 l_lblitAux.widget = new Grid();//El widget principal es de tipo grid
                 TextBlock tb = new TextBlock();//Se crea el subtipo textblock para mostrarlo dentro del grid
@@ -255,7 +326,7 @@ namespace Encase_XS_WPF
                 //Propiedades de los elementos
                 //Estas propiedades van cambiando dependiendo del tipo de elemento que hemos añadido,
                 //usando o no las propiedades que necesitamos
-                tb.Margin = new Thickness(5, 2, 2, 2);
+                tb.Margin = new Thickness(5, 2, 2, 2);                
                 l_lblitAux.widget.MinHeight = 10;
                 l_lblitAux.widget.MinWidth = 10;
                 rect.Fill = Brushes.Transparent;
@@ -267,20 +338,29 @@ namespace Encase_XS_WPF
                 tb.Height = l_lblitAux.widget.Height;
                 l_lblitAux.orientation = "horizontal";//Horizontal por defecto
                 l_lblitAux.type = types_items.lbl;
-                l_lblitAux.id = -1;//Cuidado con el tema de los ids
-                tb.TextWrapping = TextWrapping.Wrap;
+                l_lblitAux.id = -1;//Cuidado con el tema de los ids                
                 l_lblitAux.is_selected = false;
                 l_lblitAux.font = "Arial";
-                l_lblitAux.font_size = 14; 
+                l_lblitAux.font_size = 14;
+                l_lblitAux.widget.Background = Brushes.LightGreen;
+                l_lblitAux.widget.Opacity = 0.5;
+                l_lblitAux.is_selected = true;
+                l_lblitAux.widget.Focus();
+                //Actualiza los datos de condición del TextBox
+                l_lblitAux.condition = "none";
+                l_lblitAux.cond_resource = "line.SaleForm";
+                cond_line_saleform.IsSelected = true;
                 //Se crea el grupo de eventos a los que reaccionará
                 l_lblitAux.widget.MouseLeftButtonDown += Widget_MouseLeftButtonDown;
                 l_lblitAux.widget.MouseMove += Widget_MouseMove;
                 l_lblitAux.widget.MouseLeftButtonUp += Widget_MouseLeftButtonUp;
                 l_lblitAux.widget.MouseRightButtonDown += Widget_MouseRightButtonDown;
                 l_lblitAux.widget.MouseRightButtonUp += Widget_MouseRightButtonUp;
+                
                 //Actualiza el textbox de ancho objeto con el valor puesto por defecto
                 Ancho_Objeto.Text = Convert.ToString(l_lblitAux.widget.Width / 8);
                 Alto_Objeto.Text = Convert.ToString(l_lblitAux.widget.Height / 8);
+                
                 //Se posiciona el elemento en el canvas
                 Canvas.SetLeft(l_lblitAux.widget, 0);
                 Canvas.SetTop(l_lblitAux.widget, 0);
@@ -291,9 +371,9 @@ namespace Encase_XS_WPF
                     l_lblitAux.weight_num = lbl_cnt_weight;
                     lbl_cnt_weight++;
                     l_lblitAux.labelSelec = "weight";
-                    l_lblitAux.widget.Name = "lbl_weight_" + lbl_cnt_weight;
-                    
+                    l_lblitAux.widget.Name = "lbl_weight_" + lbl_cnt_weight;                    
                     tb.Text = "Text " + lbl_cnt_weight;
+                    Text_tb.Text = tb.Text;
                     cnv1.Children.Add(l_lblitAux.widget);
                 }
                 else if (Tbt2.IsSelected)
@@ -303,21 +383,28 @@ namespace Encase_XS_WPF
                     l_lblitAux.labelSelec = "resume";
                     l_lblitAux.widget.Name = "lbl_resume_" + lbl_cnt_resume;
                     tb.Text = "Text " + lbl_cnt_resume;
+                    Text_tb.Text = tb.Text;
                     cnv2.Children.Add(l_lblitAux.widget);
                 }
                 l_lblitAux.widget.Children.Add(rect);//Se le añade al grid el rectángulo
-                l_lblitAux.widget.Children.Add(tb);//Se le añade al grid el textblock
+                l_lblitAux.widget.Children.Add(tb);//Se le añade al grid el textblock                
                 //Se le asigna un número a su variable que controla que número de elemento es en
                 //la aplicacion en general
                 l_lblitAux.idCount = m_lstLabels.Count();
                 m_lstLabels.Add(l_lblitAux);
                 //Mostrar/Ocultar cosas necesarias o innecesarias del menú izquierdo
-                border_thin_selector.Visibility = Visibility.Hidden;
-                sel_font_size.Visibility = Visibility.Visible;
-                sel_font_type.Visibility = Visibility.Visible;
+                sel_prop_text.IsEnabled = true;
+                sel_prop_barcode.IsEnabled = false;
+                sel_prop_id.IsEnabled = false;
+                sel_prop_tipo.IsEnabled = false;
+                alignment_toolbar.IsEnabled = true;
+                condition_toolbar.IsEnabled = true;
 
             }            
         }
+
+        
+
         private void Add_Campo_Click(object sender, RoutedEventArgs e)
         {
 
@@ -349,9 +436,9 @@ namespace Encase_XS_WPF
                 l_lblitAux.type = types_items.box;
                 
                 tb.TextWrapping = TextWrapping.Wrap;
-
-                l_lblitAux.is_selected = false;
-                
+                l_lblitAux.widget.Background = Brushes.LightGreen;
+                l_lblitAux.widget.Opacity = 0.5;
+                l_lblitAux.is_selected = true;                
 
                 l_lblitAux.widget.MouseLeftButtonDown += Widget_MouseLeftButtonDown;
                 l_lblitAux.widget.MouseMove += Widget_MouseMove;
@@ -387,9 +474,7 @@ namespace Encase_XS_WPF
                 m_lstLabels.Add(l_lblitAux);
                 
                 //Mostrar/Ocultar cosas necesarias o innecesarias del menú izquierdo
-                border_thin_selector.Visibility = Visibility.Visible;
-                sel_font_size.Visibility = Visibility.Hidden;
-                sel_font_type.Visibility = Visibility.Hidden;
+                
                 
 
 
@@ -423,13 +508,16 @@ namespace Encase_XS_WPF
                 rect.StrokeThickness = 1;
                 rect.Stroke = Brushes.Black;
                 l_lblitAux.widget.Width = 80;
+                l_lblitAux.widget.Background = Brushes.LightGreen;
+                l_lblitAux.widget.Opacity = 0.5;
                 tb.Width = l_lblitAux.widget.Width;
                 l_lblitAux.widget.Height = 80;
                 tb.Height = l_lblitAux.widget.Height;
                 l_lblitAux.orientation = "horizontal";//Horizontal por defecto
                 l_lblitAux.type = types_items.barcode;//Tipo de elemento ||||ES IMPORTANTE PARA EL FUNCIONAMIENTO
                 l_lblitAux.id = -1;//Cuidado con el tema de los ids
-                l_lblitAux.is_selected = false;
+                l_lblitAux.is_selected = true;
+                l_lblitAux.widget.Focus();
                 //Se crea el grupo de eventos a los que reaccionará
                 l_lblitAux.widget.MouseLeftButtonDown += Widget_MouseLeftButtonDown;
                 l_lblitAux.widget.MouseMove += Widget_MouseMove;
@@ -469,9 +557,9 @@ namespace Encase_XS_WPF
                 l_lblitAux.idCount = m_lstLabels.Count();
                 m_lstLabels.Add(l_lblitAux);
                 //Mostrar/Ocultar cosas necesarias o innecesarias del menú izquierdo
-                border_thin_selector.Visibility = Visibility.Hidden;
-                sel_font_size.Visibility = Visibility.Visible;
-                sel_font_type.Visibility = Visibility.Visible;
+                sel_prop_text.IsEnabled = false;
+                sel_prop_barcode.IsEnabled = true;
+
             }
         }
         private void Nuevo_Click(object sender, RoutedEventArgs e)
@@ -491,7 +579,7 @@ namespace Encase_XS_WPF
 
         }
         #endregion
-        #region Eventos de Control de Objetos en Canvas
+        #region Eventos de Control de Objetos en Canvas //Eventos que ocurren dentro del canvas
         private void Widget_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
             size = false;
@@ -608,6 +696,14 @@ namespace Encase_XS_WPF
             {
                 for (int i = 0; i < m_lstLabels.Count(); i++)
                 {
+                    label_item lbl = m_lstLabels[i];
+                    lbl.is_selected = false;
+                    lbl.widget.Background = Brushes.Transparent;
+                    lbl.widget.Opacity = 1;
+                    m_lstLabels[i] = lbl;
+                }
+                for (int i = 0; i < m_lstLabels.Count(); i++)
+                {
                     if (rectangle.Name == m_lstLabels[i].widget.Name)
                     {
                         if (m_lstLabels[i].is_selected == false)
@@ -631,12 +727,25 @@ namespace Encase_XS_WPF
                             int leftInt = Convert.ToInt32(Canvas.GetLeft(rectangle));
                             int topInt = Convert.ToInt32(Canvas.GetTop(rectangle));
                             lbl_single_select = m_lstLabels[i].idCount;
-
-
+                            //Actualiza el valor del textbox para añadir texto
                             Text_tb.Text = m_lstLabels[i].widget.Children.OfType<TextBlock>().First().Text;
-                            
-                            
-                            Object_X.Text = Convert.ToString(leftInt);
+                            //Actualiza el valor de los datos de condición
+                            cond_value.Text = m_lstLabels[i].cond_value;
+                            if (m_lstLabels[i].condition == "none")
+                            {
+                                cond_none.IsSelected = true;
+                            }
+                            else if (m_lstLabels[i].condition == "equal")
+                            {
+                                cond_same.IsSelected = true;
+                            }
+                            else if (m_lstLabels[i].condition == "not equal")
+                            {
+                                cond_dist.IsSelected = true;
+                            }
+                            select_field_cond(m_lstLabels[i].cond_resource);
+                            //Actualiza los textbox de posicion
+                            Object_X.Text = Convert.ToString(leftInt);                            
                             Object_Y.Text = Convert.ToString(topInt);
                             
                         }
@@ -658,6 +767,7 @@ namespace Encase_XS_WPF
             }
             
         }
+        
         private void cnv2_MouseMove(object sender, MouseEventArgs e)
         {
             ruler2h.MarkerControlReference = cnv2;
@@ -669,7 +779,7 @@ namespace Encase_XS_WPF
             ruler1v.MarkerControlReference = cnv1;
         }
         #endregion
-        #region Eventos de Menú
+        #region Eventos de Menú //Eventos del menú de la derecha
         private void Ancho_Objeto_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             
@@ -825,30 +935,704 @@ namespace Encase_XS_WPF
                 }
             }
         }
-        #endregion
-        #region Eventos globales
-        private void Window_KeyDown(object sender, KeyEventArgs e)
+        private void barcode_ean8_Selected(object sender, RoutedEventArgs e)
         {
             for (int i = 0; i < m_lstLabels.Count(); i++)
             {
                 if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
                 {
-                    if(Tbt1.IsSelected)
-                    {
-                        cnv1.Children.Remove(m_lstLabels[i].widget);
+                    label_item l_lbl = m_lstLabels[i];
+                    l_lbl.barcode_type = "ean8";
+                    m_lstLabels[i] = l_lbl;
 
-                        m_lstLabels.RemoveAt(i);
-
-                    }
-                    else if(Tbt2.IsSelected)
-                    {
-                        cnv2.Children.Remove(m_lstLabels[i].widget);
-
-                        m_lstLabels.RemoveAt(i);
-                    }                    
                 }
             }
         }
+
+        private void barcode_ean13_Selected(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < m_lstLabels.Count(); i++)
+            {
+                if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
+                {
+                    label_item l_lbl = m_lstLabels[i];
+                    l_lbl.barcode_type = "ean13";
+                    m_lstLabels[i] = l_lbl;
+
+                }
+            }
+        }
+
+        private void barcode_ean14_Selected(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < m_lstLabels.Count(); i++)
+            {
+                if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
+                {
+                    label_item l_lbl = m_lstLabels[i];
+                    l_lbl.barcode_type = "ean14";
+                    m_lstLabels[i] = l_lbl;
+
+                }
+            }
+        }
+
+        private void barcode_code39_Selected(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < m_lstLabels.Count(); i++)
+            {
+                if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
+                {
+                    label_item l_lbl = m_lstLabels[i];
+                    l_lbl.barcode_type = "code39";
+                    m_lstLabels[i] = l_lbl;
+
+                }
+            }
+        }
+
+        private void barcode_code128_Selected(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < m_lstLabels.Count(); i++)
+            {
+                if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
+                {
+                    label_item l_lbl = m_lstLabels[i];
+                    l_lbl.barcode_type = "code128";
+                    m_lstLabels[i] = l_lbl;
+
+                }
+            }
+        }
+        private void Iz_Arr_Click(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < m_lstLabels.Count(); i++)
+            {
+                if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
+                {
+                    Canvas.SetLeft(m_lstLabels[i].widget, 0);
+                    Canvas.SetTop(m_lstLabels[i].widget, 0); 
+                }
+            }
+        }
+        
+        private void cen_arr_Click(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < m_lstLabels.Count(); i++)
+            {
+                if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
+                {
+                    Canvas.SetLeft(m_lstLabels[i].widget, cnv1.Width / 2 - m_lstLabels[i].widget.Width / 2);
+                    Canvas.SetTop(m_lstLabels[i].widget, 0);    
+                }
+            }
+        }
+        
+        private void Der_Arr_Click(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < m_lstLabels.Count(); i++)
+            {
+                if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
+                {
+                    Canvas.SetLeft(m_lstLabels[i].widget, cnv1.Width  - m_lstLabels[i].widget.Width );
+                    Canvas.SetTop(m_lstLabels[i].widget, 0);
+                }
+            }
+        }
+
+        private void izq_cen_Click(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < m_lstLabels.Count(); i++)
+            {
+                if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
+                {
+                    Canvas.SetLeft(m_lstLabels[i].widget, 0);
+                    Canvas.SetTop(m_lstLabels[i].widget, cnv1.Height / 2 - m_lstLabels[i].widget.Height / 2);
+                }
+            }
+        }
+
+        private void cen_cen_Click(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < m_lstLabels.Count(); i++)
+            {
+                if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
+                {
+                    Canvas.SetLeft(m_lstLabels[i].widget, cnv1.Width / 2 - m_lstLabels[i].widget.Width / 2);
+                    Canvas.SetTop(m_lstLabels[i].widget, cnv1.Height / 2 - m_lstLabels[i].widget.Height / 2);
+                }
+            }
+        }
+
+        private void der_cen_Click(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < m_lstLabels.Count(); i++)
+            {
+                if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
+                {
+                    Canvas.SetLeft(m_lstLabels[i].widget, cnv1.Width - m_lstLabels[i].widget.Width);
+                    Canvas.SetTop(m_lstLabels[i].widget, cnv1.Height / 2 - m_lstLabels[i].widget.Height / 2);
+                }
+            }
+        }
+
+        private void izq_ab_Click(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < m_lstLabels.Count(); i++)
+            {
+                if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
+                {
+                    Canvas.SetLeft(m_lstLabels[i].widget, 0);
+                    Canvas.SetTop(m_lstLabels[i].widget, cnv1.Height - m_lstLabels[i].widget.Height);
+                }
+            }
+        }
+
+        private void cen_ab_Click(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < m_lstLabels.Count(); i++)
+            {
+                if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
+                {
+                    Canvas.SetLeft(m_lstLabels[i].widget, cnv1.Width / 2 - m_lstLabels[i].widget.Width / 2);
+                    Canvas.SetTop(m_lstLabels[i].widget, cnv1.Height - m_lstLabels[i].widget.Height);
+                }
+            }
+        }
+
+        private void der_ab_Click(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < m_lstLabels.Count(); i++)
+            {
+                if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
+                {
+                    Canvas.SetLeft(m_lstLabels[i].widget, cnv1.Width - m_lstLabels[i].widget.Width);
+                    Canvas.SetTop(m_lstLabels[i].widget, cnv1.Height - m_lstLabels[i].widget.Height);
+                }
+            }
+        }
+        private void align_con_iz_Checked(object sender, RoutedEventArgs e)
+        {
+            if (align_con_der.IsChecked == true)
+            {
+                align_con_der.IsChecked = false;
+            }
+            if (align_con_cen.IsChecked == true)
+            {
+                align_con_cen.IsChecked = false;
+            }
+            for (int i = 0; i < m_lstLabels.Count(); i++)
+            {
+                if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
+                {
+                    m_lstLabels[i].widget.Children.OfType<TextBlock>().First().TextAlignment = TextAlignment.Left;
+                    m_lstLabels[i].widget.Children.OfType<TextBlock>().First().Margin = new Thickness(5, 2, 2, 2);
+                }
+            }
+        }
+
+        private void align_con_cen_Checked(object sender, RoutedEventArgs e)
+        {
+            if (align_con_der.IsChecked == true)
+            {
+                align_con_der.IsChecked = false;
+            }
+            if (align_con_iz.IsChecked == true)
+            {
+                align_con_iz.IsChecked = false;
+            }
+            for (int i = 0; i < m_lstLabels.Count(); i++)
+            {
+                if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
+                {
+                    m_lstLabels[i].widget.Children.OfType<TextBlock>().First().TextAlignment = TextAlignment.Center;
+                    m_lstLabels[i].widget.Children.OfType<TextBlock>().First().Margin = new Thickness(5, 2, 2, 2);
+                }
+            }
+        }
+
+        private void align_con_der_Checked(object sender, RoutedEventArgs e)
+        {
+            if (align_con_cen.IsChecked == true)
+            {
+                align_con_cen.IsChecked = false;
+            }
+            if (align_con_iz.IsChecked == true)
+            {
+                align_con_iz.IsChecked = false;
+            }
+            for (int i = 0; i < m_lstLabels.Count(); i++)
+            {
+                if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
+                {
+                    m_lstLabels[i].widget.Children.OfType<TextBlock>().First().TextAlignment = TextAlignment.Right;
+                    m_lstLabels[i].widget.Children.OfType<TextBlock>().First().Margin = new Thickness(0, 2, 0, 2);
+                }
+            }
+        }
+        private void cond_line_saleform_Selected(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < m_lstLabels.Count(); i++)
+            {
+                if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
+                {
+                    label_item lbl = m_lstLabels[i];
+                    lbl.cond_resource = "line.SaleForm";
+                    m_lstLabels[i] = lbl;
+                }
+            }
+
+        }
+
+        private void cond_line_itemName_Selected(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < m_lstLabels.Count(); i++)
+            {
+                if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
+                {
+                    label_item lbl = m_lstLabels[i];
+                    lbl.cond_resource = "line.ItemName";
+                    m_lstLabels[i] = lbl;
+                }
+            }
+        }
+
+        private void cond_line_description_Selected(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < m_lstLabels.Count(); i++)
+            {
+                if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
+                {
+                    label_item lbl = m_lstLabels[i];
+                    lbl.cond_resource = "line.Description";
+                    m_lstLabels[i] = lbl;
+                }
+            }
+        }
+
+        private void cond_line_NutInfo_Selected(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < m_lstLabels.Count(); i++)
+            {
+                if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
+                {
+                    label_item lbl = m_lstLabels[i];
+                    lbl.cond_resource = "line.NutritionalInfo";
+                    m_lstLabels[i] = lbl;
+                }
+            }
+        }
+
+        private void cond_line_TraceInfo_Selected(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < m_lstLabels.Count(); i++)
+            {
+                if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
+                {
+                    label_item lbl = m_lstLabels[i];
+                    lbl.cond_resource = "line.TraceInfo";
+                    m_lstLabels[i] = lbl;
+                }
+            }
+        }
+
+        private void cond_line_units_Selected(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < m_lstLabels.Count(); i++)
+            {
+                if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
+                {
+                    label_item lbl = m_lstLabels[i];
+                    lbl.cond_resource = "line.Units";
+                    m_lstLabels[i] = lbl;
+                }
+            }
+        }
+
+        private void cond_line_price_Selected(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < m_lstLabels.Count(); i++)
+            {
+                if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
+                {
+                    label_item lbl = m_lstLabels[i];
+                    lbl.cond_resource = "line.Price";
+                    m_lstLabels[i] = lbl;
+                }
+            }
+        }
+
+        private void cond_line_weight_Selected(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < m_lstLabels.Count(); i++)
+            {
+                if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
+                {
+                    label_item lbl = m_lstLabels[i];
+                    lbl.cond_resource = "line.Weight";
+                    m_lstLabels[i] = lbl;
+                }
+            }
+        }
+
+        private void cond_line_amount_Selected(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < m_lstLabels.Count(); i++)
+            {
+                if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
+                {
+                    label_item lbl = m_lstLabels[i];
+                    lbl.cond_resource = "line.Amount";
+                    m_lstLabels[i] = lbl;
+                }
+            }
+        }
+
+        private void cond_line_OffDesc_Selected(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < m_lstLabels.Count(); i++)
+            {
+                if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
+                {
+                    label_item lbl = m_lstLabels[i];
+                    lbl.cond_resource = "line.OffDescription";
+                    m_lstLabels[i] = lbl;
+                }
+            }
+        }
+
+        private void cond_line_OffImp_Selected(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < m_lstLabels.Count(); i++)
+            {
+                if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
+                {
+                    label_item lbl = m_lstLabels[i];
+                    lbl.cond_resource = "line.OffImport";
+                    m_lstLabels[i] = lbl;
+                }
+            }
+        }
+
+        private void cond_line_Pack_Selected(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < m_lstLabels.Count(); i++)
+            {
+                if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
+                {
+                    label_item lbl = m_lstLabels[i];
+                    lbl.cond_resource = "line.Packingdate";
+                    m_lstLabels[i] = lbl;
+                }
+            }
+        }
+
+        private void cond_line_Expiring_Selected(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < m_lstLabels.Count(); i++)
+            {
+                if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
+                {
+                    label_item lbl = m_lstLabels[i];
+                    lbl.cond_resource = "line.ExpiringDate";
+                    m_lstLabels[i] = lbl;
+                }
+            }
+        }
+
+        private void cond_line_pref_Selected(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < m_lstLabels.Count(); i++)
+            {
+                if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
+                {
+                    label_item lbl = m_lstLabels[i];
+                    lbl.cond_resource = "line.PreferingDate";
+                    m_lstLabels[i] = lbl;
+                }
+            }
+        }
+
+        private void cond_line_lote_Selected(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < m_lstLabels.Count(); i++)
+            {
+                if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
+                {
+                    label_item lbl = m_lstLabels[i];
+                    lbl.cond_resource = "line.Lote";
+                    m_lstLabels[i] = lbl;
+                }
+            }
+        }
+
+        private void cond_line_order_Selected(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < m_lstLabels.Count(); i++)
+            {
+                if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
+                {
+                    label_item lbl = m_lstLabels[i];
+                    lbl.cond_resource = "line.Order";
+                    m_lstLabels[i] = lbl;
+                }
+            }
+        }
+
+        private void cond_total_weight_Selected(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < m_lstLabels.Count(); i++)
+            {
+                if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
+                {
+                    label_item lbl = m_lstLabels[i];
+                    lbl.cond_resource = "total.Weight";
+                    m_lstLabels[i] = lbl;
+                }
+            }
+        }
+
+        private void cond_total_amount_Selected(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < m_lstLabels.Count(); i++)
+            {
+                if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
+                {
+                    label_item lbl = m_lstLabels[i];
+                    lbl.cond_resource = "total.Amount";
+                    m_lstLabels[i] = lbl;
+                }
+            }
+        }
+
+        private void cond_total_units_Selected(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < m_lstLabels.Count(); i++)
+            {
+                if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
+                {
+                    label_item lbl = m_lstLabels[i];
+                    lbl.cond_resource = "total.Units";
+                    m_lstLabels[i] = lbl;
+                }
+            }
+        }
+
+        private void cond_total_operations_Selected(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < m_lstLabels.Count(); i++)
+            {
+                if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
+                {
+                    label_item lbl = m_lstLabels[i];
+                    lbl.cond_resource = "total.Operations";
+                    m_lstLabels[i] = lbl;
+                }
+            }
+        }
+
+        private void cond_header_text_Selected(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < m_lstLabels.Count(); i++)
+            {
+                if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
+                {
+                    label_item lbl = m_lstLabels[i];
+                    lbl.cond_resource = "header.Text";
+                    m_lstLabels[i] = lbl;
+                }
+            }
+        }
+        private void cond_none_Selected(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < m_lstLabels.Count(); i++)
+            {
+                if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
+                {
+                    label_item lbl = m_lstLabels[i];
+                    lbl.condition = "none";
+                    m_lstLabels[i] = lbl;
+                }
+            }
+        }
+
+        private void cond_same_Selected(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < m_lstLabels.Count(); i++)
+            {
+                if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
+                {
+                    label_item lbl = m_lstLabels[i];
+                    lbl.condition = "equal";
+                    m_lstLabels[i] = lbl;
+                }
+            }
+
+        }
+
+        private void cond_dist_Selected(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < m_lstLabels.Count(); i++)
+            {
+                if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
+                {
+                    label_item lbl = m_lstLabels[i];
+                    lbl.condition = "not equal";
+                    m_lstLabels[i] = lbl;
+                }
+            }
+        }
+        private void cond_value_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            for (int i = 0; i < m_lstLabels.Count(); i++)
+            {
+                if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
+                {
+                    label_item lbl = m_lstLabels[i];
+                    lbl.cond_value = cond_value.Text;
+                    m_lstLabels[i] = lbl;
+                }
+            }
+        }
+
+
         #endregion
+        #region Eventos globales //Eventos a nivel ventana
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                this.Close();
+            }
+            if (e.Key == Key.Delete)
+            {
+                for (int i = 0; i < m_lstLabels.Count(); i++)
+                 {
+                    if (m_lstLabels[i].is_selected == true && m_lstLabels[i].idCount == lbl_single_select)
+                    {
+                        if (Tbt1.IsSelected)
+                        {
+                            cnv1.Children.Remove(m_lstLabels[i].widget);
+
+                            m_lstLabels.RemoveAt(i);
+
+                        }
+                        else if (Tbt2.IsSelected)
+                        {
+                            cnv2.Children.Remove(m_lstLabels[i].widget);
+
+                            m_lstLabels.RemoveAt(i);
+                        }
+                    }
+                }
+
+
+            }
+        }
+
+
+
+
+
+        #endregion
+        #region Funciones auxiliares //Funciones que ayudan a reducir líneas de código en lugares críticos
+        //Función para la seleción de pestaña de campo de condición
+        public void select_field_cond(string cond_value)
+        {
+            if (cond_value == "line.SaleForm")
+            {
+                cond_line_saleform.IsSelected = true;
+            }
+            else if (cond_value == "line.ItemName")
+            {
+                cond_line_itemName.IsSelected = true;
+            }
+            else if (cond_value == "line.Description")
+            {
+                cond_line_description.IsSelected = true;
+            }
+            else if (cond_value == "line.MutritionalInfo")
+            {
+                cond_line_NutInfo.IsSelected = true;
+            }
+            else if (cond_value == "line.TraceInfo")
+            {
+                cond_line_TraceInfo.IsSelected = true;
+            }
+            else if (cond_value == "line.Price")
+            {
+                cond_line_price.IsSelected = true;
+            }
+            else if (cond_value == "line.Units")
+            {
+                cond_line_units.IsSelected = true;
+            }
+            else if (cond_value == "line.Price")
+            {
+                cond_line_price.IsSelected = true;
+            }
+            else if (cond_value == "line.Weight")
+            {
+                cond_line_weight.IsSelected = true;
+            }
+            else if (cond_value == "line.Amount")
+            {
+                cond_line_amount.IsSelected = true;
+            }
+            else if (cond_value == "line.OffDescription")
+            {
+                cond_line_OffDesc.IsSelected = true;
+            }
+            else if (cond_value == "line.OffImport")
+            {
+                cond_line_OffImp.IsSelected = true;
+            }
+            else if (cond_value == "line.PackingDate")
+            {
+                cond_line_Pack.IsSelected = true;
+            }
+            else if (cond_value == "line.ExpiringDate")
+            {
+                cond_line_Expiring.IsSelected = true;
+            }
+            else if (cond_value == "line.PreferingDate")
+            {
+                cond_line_pref.IsSelected = true;
+            }
+            else if (cond_value == "line.Lote")
+            {
+                cond_line_lote.IsSelected = true;
+            }
+            else if (cond_value == "line.Order")
+            {
+                cond_line_order.IsSelected = true;
+            }
+            else if (cond_value == "total.Weight")
+            {
+                cond_total_weight.IsSelected = true;
+            }
+            else if (cond_value == "total.Amount")
+            {
+                cond_total_amount.IsSelected = true;
+            }
+            else if (cond_value == "total.Units")
+            {
+                cond_total_units.IsSelected = true;
+            }
+            else if (cond_value == "total.Operations")
+            {
+                cond_total_operations.IsSelected = true;
+            }
+            else if (cond_value == "header.Text")
+            {
+                cond_header_text.IsSelected = true;
+            }            
+        }
+        #endregion
+
+        private void font_arial_toolbox_Selected(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

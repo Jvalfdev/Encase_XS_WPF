@@ -175,19 +175,23 @@
                                         <StackPanel Orientation="Horizontal" Name="sel_font_type" HorizontalAlignment="Center" Margin="5">
                                             <TextBlock Text="Fuente" FontSize="12"/>
                                             <ComboBox >
-                                                <ComboBoxItem IsSelected="True" Content="Arial"/>
-                                                <ComboBoxItem Content="Calibri"/>
-                                                <ComboBoxItem Content="Courier New"/>
-                                                <ComboBoxItem Content="Times New Roman"/>
+                                                <ComboBoxItem IsSelected="True" Content="Arial"
+                                                              Name="font_arial_sel" Selected="font_arial_sel_Selected"/>
+                                                <ComboBoxItem Content="Calibri"
+                                                              Name="font_calibri_sel" Selected="font_calibri_sel_Selected"/>
+                                                <ComboBoxItem Content="Courier New"
+                                                              Name="font_courier_sel" Selected="font_courier_sel_Selected"/>
+                                                <ComboBoxItem Content="Times New Roman"
+                                                              Name="font_times_sel" Selected="font_times_sel_Selected"/>
                                             </ComboBox>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Name="sel_font_size" HorizontalAlignment="Center" Margin="5">
-                                            <TextBlock Text="Tamaño" FontSize="12" Name="Tamaño_Letra_Objeto"/>
-                                            <xctk:IntegerUpDown/>
+                                            <TextBlock Text="Tamaño" FontSize="12" />
+                                            <xctk:IntegerUpDown Name="size_font_object" ValueChanged="size_font_object_ValueChanged"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Name="sel_neg_curs" Margin="5" HorizontalAlignment="Center">
-                                            <CheckBox Content="Negrita"></CheckBox>
-                                            <CheckBox Content="Cursiva"></CheckBox>
+                                            <CheckBox Content="Negrita" Name="sel_negrita" Checked="sel_negrita_Checked" Unchecked="sel_negrita_Unchecked"></CheckBox>
+                                            <CheckBox Content="Cursiva" Name="sel_cursiva" Checked="sel_cursiva_Checked" Unchecked="sel_cursiva_Unchecked"></CheckBox>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Name="border_thin_selector" HorizontalAlignment="Center" Margin="5" >
                                             <TextBlock Text="Grosor de cajeado: "/>
@@ -213,33 +217,33 @@
                                         <StackPanel Name="sel_prop_id" IsEnabled="False"
                                                     Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
                                             <TextBlock Text="ID" FontSize="12"/>
-                                            <xctk:IntegerUpDown/>
+                                            <xctk:IntegerUpDown Name="id_type" ValueChanged="id_type_ValueChanged"/>
                                         </StackPanel>
                                         <StackPanel Name="sel_prop_campo" IsEnabled="False"
                                                     Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
                                             <TextBlock Text="Campo" FontSize="12"/>
                                             <ComboBox>
-                                                <ComboBoxItem Content="line.SaleForm"/>
-                                                <ComboBoxItem Content="line.ItemName"/>
-                                                <ComboBoxItem Content="line.Description"/>
-                                                <ComboBoxItem Content="line.NutritionalInfo"/>
-                                                <ComboBoxItem Content="line.TraceInfo"/>
-                                                <ComboBoxItem Content="line.Units"/>
-                                                <ComboBoxItem Content="line.Price"/>
-                                                <ComboBoxItem Content="line.Weight"/>
-                                                <ComboBoxItem Content="line.Amount"/>
-                                                <ComboBoxItem Content="line.OffDescription"/>
-                                                <ComboBoxItem Content="line.OffImport"/>
-                                                <ComboBoxItem Content="line.PackingDate"/>
-                                                <ComboBoxItem Content="line.ExpiringDate"/>
-                                                <ComboBoxItem Content="line.PreferingDate"/>
-                                                <ComboBoxItem Content="line.Lote"/>
-                                                <ComboBoxItem Content="line.Order"/>
-                                                <ComboBoxItem Content="total.Weight"/>
-                                                <ComboBoxItem Content="total.Amount"/>
-                                                <ComboBoxItem Content="total.Units"/>
-                                                <ComboBoxItem Content="total.Operations"/>
-                                                <ComboBoxItem Content="header.Text"/>
+                                                <ComboBoxItem Content="line.SaleForm" Name="sel_line_saleform" Selected="sel_line_saleform_Selected"/>
+                                                <ComboBoxItem Content="line.ItemName" Name="sel_line_itemname" Selected="sel_line_itemname_Selected"/>
+                                                <ComboBoxItem Content="line.Description" Name="sel_line_description" Selected="sel_line_description_Selected"/>
+                                                <ComboBoxItem Content="line.NutritionalInfo" Name="sel_line_nut" Selected="sel_line_nut_Selected"/>
+                                                <ComboBoxItem Content="line.TraceInfo" Name="sel_line_trace" Selected="sel_line_trace_Selected"/>
+                                                <ComboBoxItem Content="line.Units" Name="sel_line_units" Selected="sel_line_units_Selected"/>
+                                                <ComboBoxItem Content="line.Price" Name="sel_line_price" Selected="sel_line_price_Selected"/>
+                                                <ComboBoxItem Content="line.Weight" Name="sel_line_weight" Selected="sel_line_weight_Selected"/>
+                                                <ComboBoxItem Content="line.Amount" Name="sel_line_amount" Selected="sel_line_amount_Selected"/>
+                                                <ComboBoxItem Content="line.OffDescription" Name="sel_line_offdesc" Selected="sel_line_offdesc_Selected"/>
+                                                <ComboBoxItem Content="line.OffImport" Name="sel_line_offimp" Selected="sel_line_offimp_Selected"/>
+                                                <ComboBoxItem Content="line.PackingDate" Name="sel_line_pack" Selected="sel_line_pack_Selected"/>
+                                                <ComboBoxItem Content="line.ExpiringDate" Name="sel_line_exp" Selected="sel_line_exp_Selected"/>
+                                                <ComboBoxItem Content="line.PreferingDate" Name="sel_line_pref" Selected="sel_line_pref_Selected"/>
+                                                <ComboBoxItem Content="line.Lote" Name="sel_line_lote" Selected="sel_line_lote_Selected"/>
+                                                <ComboBoxItem Content="line.Order" Name="sel_line_order" Selected="sel_line_order_Selected"/>
+                                                <ComboBoxItem Content="total.Weight" Name="sel_total_weight" Selected="sel_total_weight_Selected"/>
+                                                <ComboBoxItem Content="total.Amount" Name="sel_total_amount" Selected="sel_total_amount_Selected"/>
+                                                <ComboBoxItem Content="total.Units" Name="sel_total_units" Selected="sel_total_units_Selected"/>
+                                                <ComboBoxItem Content="total.Operations" Name="sel_total_operations" Selected="sel_total_operations_Selected"/>
+                                                <ComboBoxItem Content="header.Text" Name="sel_header_text" Selected="sel_header_text_Selected"/>
                                             </ComboBox>
                                         </StackPanel>
                                         <StackPanel Name="sel_prop_tipo" IsEnabled="False"

@@ -400,7 +400,7 @@ namespace Encase_XS_WPF
             }                 
             l_fsXML.Close();
         }
-        private void Add_Texto_Click(object sender, RoutedEventArgs args)
+        private void Add_Texto_Click(object sender, RoutedEventArgs args)//Añade un objeto tipo texto
         {
             for (int i = 0; i < m_lstLabels.Count(); i++)
             {
@@ -506,7 +506,7 @@ namespace Encase_XS_WPF
 
             }            
         }   
-        private void Add_Campo_Click(object sender, RoutedEventArgs e)
+        private void Add_Campo_Click(object sender, RoutedEventArgs e)//Añade un objeto tipo Campo
         {
             for (int i = 0; i < m_lstLabels.Count(); i++) //Deselecciona los objetos seleccionados
             {
@@ -612,7 +612,7 @@ namespace Encase_XS_WPF
             }
                        
         }
-        private void Add_Cajeado_Click(object sender, RoutedEventArgs e)
+        private void Add_Cajeado_Click(object sender, RoutedEventArgs e)//Añade un cuadrado vacío pintando su borde
         {
             for (int i = 0; i < m_lstLabels.Count(); i++) //Deselecciona los objetos seleccionados
             {
@@ -704,7 +704,7 @@ namespace Encase_XS_WPF
         {
 
         }
-        private void Add_Barcode_Click(object sender, RoutedEventArgs e)
+        private void Add_Barcode_Click(object sender, RoutedEventArgs e)//Añade un código de barras
         {
             for (int i = 0; i < m_lstLabels.Count(); i++) //Deselecciona los objetos seleccionados
             {

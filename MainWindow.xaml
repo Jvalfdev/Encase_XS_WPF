@@ -9,7 +9,7 @@
         xmlns:rulerControl="clr-namespace:RulerControl.Wpf;assembly=RulerControl.Wpf"
         mc:Ignorable="d"
         Title="MainWindow" Height="1024" Width="1280" HorizontalContentAlignment="Stretch"  VerticalContentAlignment="Stretch" WindowState="Maximized" 
-        KeyDown="Window_KeyDown">
+        KeyDown="Window_KeyDown" Closing="Window_Closing">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -246,7 +246,7 @@
                                                 <ComboBoxItem Content="header.Text" Name="sel_header_text" Selected="sel_header_text_Selected"/>
                                             </ComboBox>
                                         </StackPanel>
-                                        <StackPanel Name="sel_prop_tipo" IsEnabled="False"
+                                        <!--<StackPanel Name="sel_prop_tipo" IsEnabled="False"
                                                     Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
                                             <TextBlock Text="Tipo" FontSize="12"/>
                                             <ComboBox>
@@ -255,7 +255,7 @@
                                                 <ComboBoxItem Content="Codigo de barras"/>
                                                 <ComboBoxItem Content="Cajeado"/>
                                             </ComboBox>
-                                        </StackPanel>
+                                        </StackPanel>-->
                                         <StackPanel Name="sel_prop_barcode" IsEnabled="False"
                                                     Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
                                             <TextBlock Text="Código de barras" FontSize="12"/>

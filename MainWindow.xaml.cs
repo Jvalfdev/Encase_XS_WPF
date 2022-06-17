@@ -1,4 +1,4 @@
-﻿// 1529
+﻿//Faltan probar el grabado de lineas en el xml de logo y sello
 //Encase_XS_WPFVersion
 //Autor: Jose Vallejo Fernandez
 //Grupo Epelsa
@@ -23,19 +23,40 @@ using Microsoft.Win32;
 using System.IO;
 
 using System.ComponentModel;
+using System.Reflection;
+
 enum types_items { none = 0, lbl, field, logo, box, barcode, seal};
 namespace Encase_XS_WPF
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+    /// 
+
+    #region Función para el mapeo de imagenes
+    internal static class ResourceAccessor
+    {
+        public static Uri Get(string resourcePath)
+        {
+            var uri = string.Format(
+                "pack://application:,,,/{0};component/{1}"
+                , Assembly.GetExecutingAssembly().GetName().Name
+                , resourcePath
+            );
+
+            return new Uri(uri);
+        }
+    }
+    #endregion
     public partial class MainWindow : Window
     {
+        Image im = new Image();
         #region Variables de objeto//Variables y listas relacionadas con los objetos que añadimos al canvas
 
         int lbl_cnt_weight = 0;
         int lbl_cnt_resume = 0;
         int lbl_single_select = 0;
+        int seal_counter;
         struct label_item  //Estructura para dar valor a las propiedades de cada objeto
         {
             public Grid widget;
@@ -283,6 +304,43 @@ namespace Encase_XS_WPF
 
                             }
                         }
+                        if (m_lstLabels[idx].type == types_items.logo)
+                        {
+                            
+                            
+                            if (m_lstLabels[idx].condition != "none")
+                            {
+                                l_fsXML.WriteLine("\t\t\t<if condition=\"" + m_lstLabels[idx].condition + "\" resource1=\"" + m_lstLabels[idx].cond_resource + "\" value2=\"" + m_lstLabels[idx].cond_value + "\">");
+
+                                l_fsXML.WriteLine("\t\t\t<item type=\"logo\" alignment=\"\" orientation =\"\"  x=\"" + Convert.ToString(PosX) + "\" y=\"" + Convert.ToString(PosY) + "\" width=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Width)) + "\" height=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Height)) + "\"></item>");
+
+                                l_fsXML.WriteLine("\t\t\t</if>");
+                            }
+                            else
+                            {
+                                l_fsXML.WriteLine("\t\t\t<item type=\"logo\" alignment=\"\" orientation =\"\"  x=\"" + Convert.ToString(PosX) + "\" y=\"" + Convert.ToString(PosY) + "\" width=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Width)) + "\" height=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Height)) + "\"></item>");
+
+                            }
+                        }
+                        if (m_lstLabels[idx].type == types_items.seal)
+                        {
+
+
+                            if (m_lstLabels[idx].condition != "none")
+                            {
+                                l_fsXML.WriteLine("\t\t\t<if condition=\"" + m_lstLabels[idx].condition + "\" resource1=\"" + m_lstLabels[idx].cond_resource + "\" value2=\"" + m_lstLabels[idx].cond_value + "\">");
+
+                                l_fsXML.WriteLine("\t\t\t<item type=\"seal\" id=\"" + m_lstLabels[idx].id + "\" alignment=\"\" orientation =\"\"  x=\"" + Convert.ToString(PosX) + "\" y=\"" + Convert.ToString(PosY) + "\" width=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Width)) + "\" height=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Height)) + "\"></item>");
+
+                                l_fsXML.WriteLine("\t\t\t</if>");
+                            }
+                            else
+                            {
+                                l_fsXML.WriteLine("\t\t\t<item type=\"seal\" id=\"" + m_lstLabels[idx].id + "\" alignment=\"\" orientation =\"\"  x=\"" + Convert.ToString(PosX) + "\" y=\"" + Convert.ToString(PosY) + "\" width=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Width)) + "\" height=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Height)) + "\"></item>");
+
+                            }
+                        }
+
 
                     }
                 }
@@ -498,7 +556,6 @@ namespace Encase_XS_WPF
                 sel_prop_text.IsEnabled = true;
                 sel_prop_barcode.IsEnabled = false;
                 sel_prop_id.IsEnabled = false;
-                sel_prop_tipo.IsEnabled = false;
                 sel_prop_campo.IsEnabled = false;
                 alignment_toolbar.IsEnabled = true;
                 condition_toolbar.IsEnabled = true;
@@ -530,10 +587,11 @@ namespace Encase_XS_WPF
                 l_lblitAux.widget.MinWidth = 10;
                 rect.Fill = Brushes.Transparent;
                 rect.StrokeThickness = 1;
+                rect.StrokeDashArray = new DoubleCollection(new double[] { 4, 4 });
                 rect.Stroke = Brushes.Black;
                 l_lblitAux.widget.Width = 80;
                 tb.Width = l_lblitAux.widget.Width;
-                l_lblitAux.widget.Height = 80;
+                l_lblitAux.widget.Height = 35;
                 tb.Height = l_lblitAux.widget.Height;
                 l_lblitAux.orientation = "horizontal";//Horizontal por defecto
                 l_lblitAux.type = types_items.field;
@@ -580,7 +638,7 @@ namespace Encase_XS_WPF
                     l_lblitAux.weight_num = lbl_cnt_weight;
                     lbl_cnt_weight++;
                     l_lblitAux.labelSelec = "weight";
-                    l_lblitAux.widget.Name = "lbl_weight_" + lbl_cnt_weight;
+                    l_lblitAux.widget.Name = "field_weight_" + lbl_cnt_weight;
                     Text_tb.Text = tb.Text;
                     cnv1.Children.Add(l_lblitAux.widget);
                 }
@@ -589,7 +647,7 @@ namespace Encase_XS_WPF
                     l_lblitAux.resume_num = lbl_cnt_resume;
                     lbl_cnt_resume++;
                     l_lblitAux.labelSelec = "resume";
-                    l_lblitAux.widget.Name = "lbl_resume_" + lbl_cnt_resume;
+                    l_lblitAux.widget.Name = "field_resume_" + lbl_cnt_resume;
                     Text_tb.Text = tb.Text;
                     cnv2.Children.Add(l_lblitAux.widget);
                 }
@@ -604,7 +662,6 @@ namespace Encase_XS_WPF
                 sel_prop_text.IsEnabled = false;
                 sel_prop_barcode.IsEnabled = false;
                 sel_prop_id.IsEnabled = true;
-                sel_prop_tipo.IsEnabled = true;
                 sel_prop_campo.IsEnabled = true;
                 alignment_toolbar.IsEnabled = true;
                 condition_toolbar.IsEnabled = true;
@@ -689,20 +746,189 @@ namespace Encase_XS_WPF
                 sel_prop_text.IsEnabled = false;
                 sel_prop_barcode.IsEnabled = false;
                 sel_prop_id.IsEnabled = false;
-                sel_prop_tipo.IsEnabled = false;
                 sel_prop_campo.IsEnabled = false;
                 alignment_toolbar.IsEnabled = false;
                 condition_toolbar.IsEnabled = true;
                 border_thin_selector.IsEnabled = true;
             }
         }
-        private void Add_Imagen_Click(object sender, RoutedEventArgs e)
+        private void Add_Imagen_Click(object sender, RoutedEventArgs e)//Añade el logo
         {
+            for (int i = 0; i < m_lstLabels.Count(); i++) //Deselecciona los objetos seleccionados
+            {
+                label_item lbl = m_lstLabels[i];
+                lbl.is_selected = false;
+                lbl.widget.Background = Brushes.Transparent;
+                lbl.widget.Opacity = 1;
+                m_lstLabels[i] = lbl;
+            }
+            if (Tbt1.IsSelected || Tbt2.IsSelected)
+            {
+                ImageBrush myBrush = new ImageBrush();                
+                myBrush.ImageSource = new BitmapImage(ResourceAccessor.Get("Resource/logo_background.png"));
+                label_item l_lblitAux = new label_item();//Crea la struct del objeto
+                l_lblitAux.widget = new Grid();//El widget principal es de tipo grid
+                TextBlock tb = new TextBlock();//Se crea el subtipo textblock para mostrarlo dentro del grid
+                Rectangle rect = new Rectangle();//Se crea un rectángulo para dibujar el borde
+                //Propiedades de los elementos
+                //Estas propiedades van cambiando dependiendo del tipo de elemento que hemos añadido,
+                //usando o no las propiedades que necesitamos
+                tb.Margin = new Thickness(5, 2, 2, 2);
+                l_lblitAux.widget.MinHeight = 10;
+                l_lblitAux.widget.MinWidth = 10;
+                rect.Fill = myBrush;
+                rect.StrokeThickness = 1;
+                rect.Stroke = Brushes.Black;
+                l_lblitAux.widget.Width = 400;
+                //new BitmapImage(ResourceAccessor.Get("Images/1.png"))
+                l_lblitAux.widget.Background = Brushes.LightGreen;
+                l_lblitAux.widget.Opacity = 0.5;
+                l_lblitAux.condition = "none";
+                select_condition_object(l_lblitAux.condition);
+                tb.Width = l_lblitAux.widget.Width;
+                l_lblitAux.widget.Height = 120;
+                tb.Height = l_lblitAux.widget.Height;
+                l_lblitAux.orientation = "horizontal";//Horizontal por defecto
+                l_lblitAux.type = types_items.logo;//Tipo de elemento ||||ES IMPORTANTE PARA EL FUNCIONAMIENTO
+                l_lblitAux.id = -1;//Cuidado con el tema de los ids
+                l_lblitAux.is_selected = true;
+                l_lblitAux.widget.Focus();
+                //Se crea el grupo de eventos a los que reaccionará
+                l_lblitAux.widget.MouseLeftButtonDown += Widget_MouseLeftButtonDown;
+                l_lblitAux.widget.MouseMove += Widget_MouseMove;
+                l_lblitAux.widget.MouseLeftButtonUp += Widget_MouseLeftButtonUp;
+                l_lblitAux.widget.MouseRightButtonDown += Widget_MouseRightButtonDown;
+                l_lblitAux.widget.MouseRightButtonUp += Widget_MouseRightButtonUp;
+                
 
+                //Actualiza el textbox de ancho objeto con el valor puesto por defecto
+                Ancho_Objeto.Text = Convert.ToString(l_lblitAux.widget.Width / 8);
+                Alto_Objeto.Text = Convert.ToString(l_lblitAux.widget.Height / 8);
+                //Se posiciona el elemento en el canvas
+                Canvas.SetLeft(l_lblitAux.widget, cnv1.Width/2 - l_lblitAux.widget.Width/2);
+                Canvas.SetTop(l_lblitAux.widget, 0);
+                Canvas.SetZIndex(l_lblitAux.widget, 0);
+                //Se añade el elemento al canvas dependiendo del 'Tab' seleccionado
+                if (Tbt1.IsSelected)
+                {
+                    lbl_cnt_weight++;
+                    l_lblitAux.labelSelec = "weight";
+                    l_lblitAux.widget.Name = "logo_weight_" + lbl_cnt_weight;
+                    cnv1.Children.Add(l_lblitAux.widget);
+                }
+                else if (Tbt2.IsSelected)
+                {
+                    lbl_cnt_resume++;
+                    l_lblitAux.labelSelec = "resume";
+                    l_lblitAux.widget.Name = "logo_resume_" + lbl_cnt_resume;
+                    cnv2.Children.Add(l_lblitAux.widget);
+                }
+                l_lblitAux.widget.Children.Add(rect);//Se le añade al grid el rectángulo
+                l_lblitAux.widget.Children.Add(tb);//Se le añade al grid el textblock
+                //Se le asigna un número a su variable que controla que número de elemento es en
+                //la aplicacion en general
+                l_lblitAux.idCount = m_lstLabels.Count();
+                m_lstLabels.Add(l_lblitAux);
+                //Mostrar/Ocultar cosas necesarias o innecesarias del menú izquierdo
+                sel_prop_text.IsEnabled = false;
+                sel_prop_barcode.IsEnabled = false;
+                sel_prop_id.IsEnabled = false;
+                alignment_toolbar.IsEnabled = false;
+                condition_toolbar.IsEnabled = true;
+                border_thin_selector.IsEnabled = false;
+                sel_prop_campo.IsEnabled = false;
+
+            }
         }
-        private void Add_Sello_Click(object sender, RoutedEventArgs e)
+        private void Add_Sello_Click(object sender, RoutedEventArgs e)//Añade un sello
         {
+            for (int i = 0; i < m_lstLabels.Count(); i++) //Deselecciona los objetos seleccionados
+            {
+                label_item lbl = m_lstLabels[i];
+                lbl.is_selected = false;
+                lbl.widget.Background = Brushes.Transparent;
+                lbl.widget.Opacity = 1;
+                m_lstLabels[i] = lbl;
+            }
+            if (Tbt1.IsSelected || Tbt2.IsSelected)
+            {
+                ImageBrush myBrush = new ImageBrush();
+                myBrush.ImageSource = new BitmapImage(ResourceAccessor.Get("Resource/seal_background.png"));
+                label_item l_lblitAux = new label_item();//Crea la struct del objeto
+                l_lblitAux.widget = new Grid();//El widget principal es de tipo grid
+                TextBlock tb = new TextBlock();//Se crea el subtipo textblock para mostrarlo dentro del grid
+                Rectangle rect = new Rectangle();//Se crea un rectángulo para dibujar el borde
+                //Propiedades de los elementos
+                //Estas propiedades van cambiando dependiendo del tipo de elemento que hemos añadido,
+                //usando o no las propiedades que necesitamos
+                tb.Margin = new Thickness(5, 2, 2, 2);
+                l_lblitAux.widget.MinHeight = 10;
+                l_lblitAux.widget.MinWidth = 10;
+                rect.Fill = myBrush;
+                rect.StrokeThickness = 1;
+                rect.Stroke = Brushes.Black;
+                l_lblitAux.widget.Width = 50;
+                //new BitmapImage(ResourceAccessor.Get("Images/1.png"))
+                l_lblitAux.widget.Background = Brushes.LightGreen;
+                l_lblitAux.widget.Opacity = 0.5;
+                l_lblitAux.condition = "none";
+                select_condition_object(l_lblitAux.condition);
+                tb.Width = l_lblitAux.widget.Width;
+                l_lblitAux.widget.Height = 50;
+                tb.Height = l_lblitAux.widget.Height;
+                l_lblitAux.orientation = "horizontal";//Horizontal por defecto
+                l_lblitAux.type = types_items.seal;//Tipo de elemento ||||ES IMPORTANTE PARA EL FUNCIONAMIENTO
+                seal_counter++;
+                l_lblitAux.id = seal_counter;//Cuidado con el tema de los ids
+                id_update_toolbar(l_lblitAux.id);
+                l_lblitAux.is_selected = true;
+                l_lblitAux.widget.Focus();
+                //Se crea el grupo de eventos a los que reaccionará
+                l_lblitAux.widget.MouseLeftButtonDown += Widget_MouseLeftButtonDown;
+                l_lblitAux.widget.MouseMove += Widget_MouseMove;
+                l_lblitAux.widget.MouseLeftButtonUp += Widget_MouseLeftButtonUp;
+                l_lblitAux.widget.MouseRightButtonDown += Widget_MouseRightButtonDown;
+                l_lblitAux.widget.MouseRightButtonUp += Widget_MouseRightButtonUp;
 
+
+                //Actualiza el textbox de ancho objeto con el valor puesto por defecto
+                Ancho_Objeto.Text = Convert.ToString(l_lblitAux.widget.Width / 8);
+                Alto_Objeto.Text = Convert.ToString(l_lblitAux.widget.Height / 8);
+                //Se posiciona el elemento en el canvas
+                Canvas.SetLeft(l_lblitAux.widget, 0);
+                Canvas.SetTop(l_lblitAux.widget, 0);
+                Canvas.SetZIndex(l_lblitAux.widget, 0);
+                //Se añade el elemento al canvas dependiendo del 'Tab' seleccionado
+                if (Tbt1.IsSelected)
+                {
+                    lbl_cnt_weight++;
+                    l_lblitAux.labelSelec = "weight";
+                    l_lblitAux.widget.Name = "seal_weight_" + lbl_cnt_weight;
+                    cnv1.Children.Add(l_lblitAux.widget);
+                }
+                else if (Tbt2.IsSelected)
+                {
+                    lbl_cnt_resume++;
+                    l_lblitAux.labelSelec = "resume";
+                    l_lblitAux.widget.Name = "seal_resume_" + lbl_cnt_resume;
+                    cnv2.Children.Add(l_lblitAux.widget);
+                }
+                l_lblitAux.widget.Children.Add(rect);//Se le añade al grid el rectángulo
+                l_lblitAux.widget.Children.Add(tb);//Se le añade al grid el textblock
+                //Se le asigna un número a su variable que controla que número de elemento es en
+                //la aplicacion en general
+                l_lblitAux.idCount = m_lstLabels.Count();
+                m_lstLabels.Add(l_lblitAux);
+                //Mostrar/Ocultar cosas necesarias o innecesarias del menú izquierdo
+                sel_prop_text.IsEnabled = false;
+                sel_prop_barcode.IsEnabled = false;
+                sel_prop_id.IsEnabled = true;
+                alignment_toolbar.IsEnabled = false;
+                condition_toolbar.IsEnabled = true;
+                border_thin_selector.IsEnabled = false;
+                sel_prop_campo.IsEnabled = false;
+
+            }
         }
         private void Add_Barcode_Click(object sender, RoutedEventArgs e)//Añade un código de barras
         {
@@ -716,7 +942,8 @@ namespace Encase_XS_WPF
             }
             if (Tbt1.IsSelected || Tbt2.IsSelected)
             {
-
+                ImageBrush myBrush = new ImageBrush();
+                myBrush.ImageSource = new BitmapImage(ResourceAccessor.Get("Resource/barcode_background.png"));
                 label_item l_lblitAux = new label_item();//Crea la struct del objeto
                 l_lblitAux.widget = new Grid();//El widget principal es de tipo grid
                 TextBlock tb = new TextBlock();//Se crea el subtipo textblock para mostrarlo dentro del grid
@@ -727,16 +954,16 @@ namespace Encase_XS_WPF
                 tb.Margin = new Thickness(5, 2, 2, 2);
                 l_lblitAux.widget.MinHeight = 10;
                 l_lblitAux.widget.MinWidth = 10;
-                rect.Fill = Brushes.Transparent;
+                rect.Fill = myBrush;
                 rect.StrokeThickness = 1;
                 rect.Stroke = Brushes.Black;
-                l_lblitAux.widget.Width = 80;
+                l_lblitAux.widget.Width = 180;
                 l_lblitAux.widget.Background = Brushes.LightGreen;
                 l_lblitAux.widget.Opacity = 0.5;
                 l_lblitAux.condition = "none";
                 select_condition_object(l_lblitAux.condition);
                 tb.Width = l_lblitAux.widget.Width;
-                l_lblitAux.widget.Height = 80;
+                l_lblitAux.widget.Height = 90;
                 tb.Height = l_lblitAux.widget.Height;
                 l_lblitAux.orientation = "horizontal";//Horizontal por defecto
                 l_lblitAux.type = types_items.barcode;//Tipo de elemento ||||ES IMPORTANTE PARA EL FUNCIONAMIENTO
@@ -763,8 +990,6 @@ namespace Encase_XS_WPF
                     lbl_cnt_weight++;
                     l_lblitAux.labelSelec = "weight";
                     l_lblitAux.widget.Name = "barcode_weight_" + lbl_cnt_weight;
-
-                    tb.Text = "Barcode";
                     cnv1.Children.Add(l_lblitAux.widget);
                 }
                 else if (Tbt2.IsSelected)
@@ -772,7 +997,6 @@ namespace Encase_XS_WPF
                     lbl_cnt_resume++;
                     l_lblitAux.labelSelec = "resume";
                     l_lblitAux.widget.Name = "barcode_resume_" + lbl_cnt_resume;
-                    tb.Text = "Barcode";
                     cnv2.Children.Add(l_lblitAux.widget);
                 }
                 l_lblitAux.widget.Children.Add(rect);//Se le añade al grid el rectángulo
@@ -785,7 +1009,6 @@ namespace Encase_XS_WPF
                 sel_prop_text.IsEnabled = false;
                 sel_prop_barcode.IsEnabled = true;
                 sel_prop_id.IsEnabled = false;
-                sel_prop_tipo.IsEnabled = false;
                 alignment_toolbar.IsEnabled = false;
                 condition_toolbar.IsEnabled = true;
                 border_thin_selector.IsEnabled = false;
@@ -795,19 +1018,25 @@ namespace Encase_XS_WPF
         }
         private void Nuevo_Click(object sender, RoutedEventArgs e)
         {
-
+            Nueva_Etiqueta_Ventana nueva_Etiqueta_Ventana = new Nueva_Etiqueta_Ventana(m_ancho_Etiqueta, m_alto_Etiqueta, m_nombre_Etiqueta);
+            nueva_Etiqueta_Ventana.Show();
         }
         private void Abrir_Click(object sender, RoutedEventArgs e)
         {
-
+            OpenFile_Click();
         }
         private void Guardar_Click(object sender, RoutedEventArgs e)
         {
 
+            dlg_save.DefaultExt = ".xml";
+            dlg_save.Filter = "XML Files (*.xml)|*.xml";
+            dlg_save.FileOk += Dlg_save_FileOk;
+            dlg_save.FileName = m_nombre_Etiqueta;
+            dlg_save.ShowDialog();
         }
         private void Salir_Click(object sender, RoutedEventArgs e)
         {
-
+            this.Close();
         }
         #endregion
         #region Eventos de Control de Objetos en Canvas //Eventos que ocurren dentro del canvas
@@ -929,50 +1158,67 @@ namespace Encase_XS_WPF
                 //Condiciones para activar o desactivar partes del menú dependiendo del tipo de objeto seleccionado
                 for (int i = 0; i < m_lstLabels.Count(); i++)
                 {
-                    if (m_lstLabels[i].type == types_items.lbl)
+                    if (m_lstLabels[i].type == types_items.lbl && m_lstLabels[i].widget.Name == rectangle.Name)
                     {
                         sel_prop_text.IsEnabled = true;
                         sel_prop_barcode.IsEnabled = false;
                         sel_prop_id.IsEnabled = false;
-                        sel_prop_tipo.IsEnabled = false;
                         sel_prop_campo.IsEnabled = false;
                         alignment_toolbar.IsEnabled = true;
                         condition_toolbar.IsEnabled = true;
                         border_thin_selector.IsEnabled = false;
                     }
-                    if (m_lstLabels[i].type == types_items.barcode)
+                    if (m_lstLabels[i].type == types_items.barcode && m_lstLabels[i].widget.Name == rectangle.Name)
                     {
                         sel_prop_text.IsEnabled = false;
                         sel_prop_barcode.IsEnabled = true;
                         sel_prop_id.IsEnabled = false;
-                        sel_prop_tipo.IsEnabled = false;
                         sel_prop_campo.IsEnabled = false;
                         alignment_toolbar.IsEnabled = false;
                         condition_toolbar.IsEnabled = true;
                         border_thin_selector.IsEnabled = false;
                     }
-                    if (m_lstLabels[i].type == types_items.field)
+                    if (m_lstLabels[i].type == types_items.field && m_lstLabels[i].widget.Name == rectangle.Name)
                     {
                         sel_prop_text.IsEnabled = false;
                         sel_prop_barcode.IsEnabled = false;
                         sel_prop_id.IsEnabled = true;
-                        sel_prop_tipo.IsEnabled = false;
                         sel_prop_campo.IsEnabled = true;
                         alignment_toolbar.IsEnabled = true;
                         condition_toolbar.IsEnabled = true;
                         border_thin_selector.IsEnabled = false;
                     }
-                    if (m_lstLabels[i].type == types_items.box)
+                    if (m_lstLabels[i].type == types_items.box && m_lstLabels[i].widget.Name == rectangle.Name)
                     {
                         sel_prop_text.IsEnabled = false;
                         sel_prop_barcode.IsEnabled = false;
                         sel_prop_id.IsEnabled = false;
-                        sel_prop_tipo.IsEnabled = false;
                         sel_prop_campo.IsEnabled = false;
                         alignment_toolbar.IsEnabled = false;
                         condition_toolbar.IsEnabled = true;
                         border_thin_selector.IsEnabled = true;
                     }
+                    if (m_lstLabels[i].type == types_items.logo && m_lstLabels[i].widget.Name == rectangle.Name)
+                    {
+                        sel_prop_text.IsEnabled = false;
+                        sel_prop_barcode.IsEnabled = false;
+                        sel_prop_id.IsEnabled = false;
+                        sel_prop_campo.IsEnabled = false;
+                        alignment_toolbar.IsEnabled = false;
+                        condition_toolbar.IsEnabled = true;
+                        border_thin_selector.IsEnabled = false;
+                    }
+                    if (m_lstLabels[i].type == types_items.seal && m_lstLabels[i].widget.Name == rectangle.Name)
+                    {
+                        sel_prop_text.IsEnabled = false;
+                        sel_prop_barcode.IsEnabled = false;
+                        sel_prop_id.IsEnabled = true;
+                        sel_prop_campo.IsEnabled = false;
+                        alignment_toolbar.IsEnabled = false;
+                        condition_toolbar.IsEnabled = true;
+                        border_thin_selector.IsEnabled = false;
+                    }
+
                 }
                 //Deselecciona los demás objetos antes de seleccionar el nuevo
                 for (int i = 0; i < m_lstLabels.Count(); i++)
@@ -2232,6 +2478,29 @@ namespace Encase_XS_WPF
 
             }
         }
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            if (MessageBox.Show("Quieres cerrar el programa?", "Cerrar", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                if (MessageBox.Show("Quieres guardar los cambios?", "Guardar", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                {
+                    dlg_save.DefaultExt = ".xml";
+                    dlg_save.Filter = "XML Files (*.xml)|*.xml";
+                    dlg_save.FileOk += Dlg_save_FileOk;
+                    dlg_save.FileName = m_nombre_Etiqueta;
+                    dlg_save.ShowDialog();
+                    
+                }
+                else
+                {
+                    
+                }
+            }
+            else
+            {
+                e.Cancel = true;
+            }
+        }
         #endregion
         #region Funciones auxiliares //Funciones que ayudan a reducir líneas de código en lugares críticos
         //En concreto las siguientes funciones lo que hacen es seleccionar en el menú de la derecha lo que se les 
@@ -2499,3 +2768,4 @@ namespace Encase_XS_WPF
         #endregion        
     }
 }
+;

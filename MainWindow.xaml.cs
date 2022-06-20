@@ -50,7 +50,9 @@ namespace Encase_XS_WPF
     #endregion
     public partial class MainWindow : Window
     {
+        #region Clase Imagen
         Image im = new Image();
+        #endregion
         #region Variables de objeto//Variables y listas relacionadas con los objetos que añadimos al canvas
 
         int lbl_cnt_weight = 0;
@@ -84,7 +86,7 @@ namespace Encase_XS_WPF
         
         //Lista para guardar los objetos creados
         List<label_item> m_lstLabels = new List<label_item>();
-        
+
         #endregion
         #region OpenFile //Variables y declaraciones relacionadas con Abrir y guardar ficheros
         OpenFileDialog dlg = new OpenFileDialog();
@@ -172,7 +174,317 @@ namespace Encase_XS_WPF
         {
             //File opener
             OpenFile_Click();
+            dlg.FileOk += Dlg_FileOk;
         }
+
+        private void Dlg_FileOk(object sender, CancelEventArgs e)
+        {
+            string l_strLine;
+            System.IO.StreamReader l_fsXML = new System.IO.StreamReader(dlg.OpenFile());
+
+            int l_iTypeLine = 0, l_iStart = 0, l_iEqual = 0, l_iEnd = 0, l_iEndItem = 0, l_iOpenValue = 0, l_iCloseValue = 0;
+            string l_strTypeLine, l_strField, l_strValue;
+
+            string l_strCondition = "", l_strCondResource = "", l_strcondValue = "";
+            bool l_bCond = false;
+
+            while (!l_fsXML.EndOfStream)
+            {
+                l_strLine = l_fsXML.ReadLine();
+
+                if (l_strLine == "")
+
+                    continue;
+                l_iTypeLine = (l_strLine.IndexOf('<') + 1);
+                l_iEndItem = (l_strLine.IndexOf('>'));
+                l_iEnd = l_strLine.IndexOf(' ', l_iTypeLine);
+
+
+                if (l_iEnd == -1)
+                    l_iEnd = l_iEndItem;
+
+
+
+
+                l_strTypeLine = l_strLine.Substring(l_iTypeLine, l_iEnd - l_iTypeLine);
+
+                if (l_strTypeLine == "report")
+                {
+                    int l_iWidth = 0, l_iHeight = 0;
+                    string l_strOrientation = "Portrait";
+                    string l_strName = "";
+
+                    while ((l_iEnd < l_iEndItem))
+                    {
+                        l_iStart = l_iEnd + 1;
+                        l_iEqual = l_strLine.IndexOf('=', l_iStart) + 1;
+                        l_iOpenValue = l_strLine.IndexOf('\"', l_iEqual) + 1;
+                        l_iCloseValue = l_strLine.IndexOf('\"', l_iOpenValue) + 1;
+                        l_iEnd = l_strLine.IndexOf(' ', l_iCloseValue);
+
+                        if (l_iEnd == -1)
+                            l_iEnd = l_iEndItem;
+
+                        l_strField = l_strLine.Substring(l_iStart, l_iEqual - l_iStart - 1);
+                        l_strValue = l_strLine.Substring(l_iOpenValue, l_iCloseValue - l_iOpenValue - 1);
+
+                        if (l_strField == "page_orientation")
+                        {
+                            l_strOrientation = l_strValue;
+                        }
+                        else if (l_strField == "page_width")
+                        {
+                            l_iWidth = Convert.ToInt32(l_strValue);
+                            if (l_iWidth > 448)
+                                l_iWidth = 448;
+                        }
+                        else if (l_strField == "page_height")
+                        {
+                            l_iHeight = Convert.ToInt32(l_strValue);
+                        }
+                        else if (l_strField == "type") { }
+                        else if (l_strField == "name")
+                        {
+                            l_strName = l_strValue;
+                        }
+                        else if (l_strField == "page") { }
+                        else if (l_strField == "width") { }
+                        else if (l_strField == "height") { }
+                        else if (l_strField == "left_margin") { }
+                        else if (l_strField == "version") { }
+                        else if (l_strField == "units") { }
+                        else if (l_strField == "auto_offset") { }
+                    }
+
+                    if ((l_strOrientation == "portrait") || (l_strOrientation == "Portrait") || (l_strOrientation == "PORTRAIT"))
+                        labelOrientation = "portrait";
+                    else if ((l_strOrientation == "landscape") || (l_strOrientation == "Landscape") || (l_strOrientation == "LANDSCAPE"))
+                        labelOrientation = "landscape";
+
+                    Nombre_Tipo_Documento.Text = l_strName;
+                    Document_Width.Text = Convert.ToString(l_iWidth);
+                    Document_Height.Text = Convert.ToString(l_iHeight);
+                }
+                else if (l_strTypeLine == "if")
+                {
+                    while ((l_iEnd < l_iEndItem))
+                    {
+                        l_iStart = l_iEnd + 1;
+                        l_iEqual = l_strLine.IndexOf('=', l_iStart) + 1;
+                        l_iOpenValue = l_strLine.IndexOf('\"', l_iEqual) + 1;
+                        l_iCloseValue = l_strLine.IndexOf('\"', l_iOpenValue) + 1;
+                        l_iEnd = l_strLine.IndexOf(' ', l_iCloseValue);
+
+                        if (l_iEnd == -1)
+                            l_iEnd = l_iEndItem;
+
+                        l_strField = l_strLine.Substring(l_iStart, l_iEqual - l_iStart - 1);
+                        l_strValue = l_strLine.Substring(l_iOpenValue, l_iCloseValue - l_iOpenValue - 1);
+
+                        if (l_strField == "condition")
+                        {
+                            l_strCondition = l_strValue;
+                        }
+
+                        else if (l_strField == "resource1")
+                        {
+                            l_strCondResource = l_strValue;
+                        }
+                        else if (l_strField == "value2")
+                        {
+                            l_strcondValue = l_strValue;
+                        }
+                    }
+                    l_bCond = true;
+                }
+                else if (l_strTypeLine == "section")
+                {
+                    int l_iWidth = 0, l_iHeight = 0, l_iX = 0, l_iY = 0;
+                    string l_strName = "";
+
+                    while ((l_iEnd < l_iEndItem))
+                    {
+                        l_iStart = l_iEnd + 1;
+                        l_iEqual = l_strLine.IndexOf('=', l_iStart) + 1;
+                        l_iOpenValue = l_strLine.IndexOf('\"', l_iEqual) + 1;
+                        l_iCloseValue = l_strLine.IndexOf('\"', l_iOpenValue) + 1;
+                        l_iEnd = l_strLine.IndexOf(' ', l_iCloseValue);
+
+                        if (l_iEnd == -1)
+                            l_iEnd = l_iEndItem;
+
+                        l_strField = l_strLine.Substring(l_iStart, l_iEqual - l_iStart - 1);
+                        l_strValue = l_strLine.Substring(l_iOpenValue, l_iCloseValue - l_iOpenValue - 1);
+
+                        if (l_strField == "name")
+                        {
+                            l_strName = l_strValue;
+                        }
+                        else if (l_strField == "width")
+                        {
+                            l_iWidth = Convert.ToInt32(l_strValue);
+                            if (l_iWidth > 448)
+                                l_iWidth = 448;
+                        }
+                        else if (l_strField == "height")
+                        {
+                            l_iHeight = Convert.ToInt32(l_strValue);
+                        }
+                        else if (l_strField == "x")
+                        {
+                            l_iX = Convert.ToInt32(l_strValue);
+                        }
+                        else if (l_strField == "y")
+                        {
+                            l_iY = Convert.ToInt32(l_strValue);
+                        }
+                    }
+                    Crear_Etiqueta(dlg.FileName, l_iWidth, l_iHeight);
+
+                    //l_iWidth, l_iHeight, l_iX, l_iY, l_strName, l_bCond, l_strCondition, l_strCondResource, l_strcondValue
+                    l_bCond = false;
+                    l_strCondition = "";
+                    l_strCondResource = "";
+                    l_strcondValue = "";
+                }
+                else if (l_strTypeLine == "item")
+                {
+                    int l_iWidth = 0, l_iHeight = 0, l_iX = 0, l_iY = 0, l_iId = -1, l_iLineWidth = 3;
+                    string l_strType = "", l_strResource = "", l_strAlignment = "", l_strBarcode = "", l_strOrientation = "", l_strFont = "";
+
+                    while ((l_iEnd < l_iEndItem))
+                    {
+                        l_iStart = l_iEnd + 1;
+                        l_iEqual = l_strLine.IndexOf('=', l_iStart) + 1;
+                        l_iOpenValue = l_strLine.IndexOf('\"', l_iEqual) + 1;
+                        l_iCloseValue = l_strLine.IndexOf('\"', l_iOpenValue) + 1;
+                        l_iEnd = l_strLine.IndexOf(' ', l_iCloseValue);
+
+                        if (l_iEnd == -1)
+                            l_iEnd = l_iEndItem;
+
+                        l_strField = l_strLine.Substring(l_iStart, l_iEqual - l_iStart - 1);
+                        l_strValue = l_strLine.Substring(l_iOpenValue, l_iCloseValue - l_iOpenValue - 1);
+
+                        if (l_strField == "resource")
+                        {
+                            if (l_strValue == "line.Operations")
+                                l_strResource = "total.Operations";
+                            else if (l_strValue == "line.netAmount")
+                                l_strResource = "total.Amount";
+                            else
+                                l_strResource = l_strValue;
+                        }
+                        else if (l_strField == "id")
+                        {
+                            l_iId = Convert.ToInt32(l_strValue);
+                        }
+                        else if (l_strField == "type")
+                        {
+                            l_strType = l_strValue;
+                        }
+                        else if (l_strField == "alignment")
+                        {
+                            l_strAlignment = l_strValue;
+                        }
+                        else if (l_strField == "font")
+                        {
+                            l_strFont = l_strValue;
+                        }
+                        else if (l_strField == "barcode_type")
+                        {
+                            l_strBarcode = l_strValue;
+                        }
+                        else if (l_strField == "orientation")
+                        {
+                            l_strOrientation = l_strValue;
+                        }
+                        else if (l_strField == "line_width")
+                        {
+                            l_iLineWidth = Convert.ToInt32(l_strValue);
+                        }
+                        else if (l_strField == "width")
+                        {
+                            l_iWidth = Convert.ToInt32(l_strValue);
+                        }
+                        else if (l_strField == "height")
+                        {
+                            l_iHeight = Convert.ToInt32(l_strValue);
+                        }
+                        else if (l_strField == "x")
+                        {
+                            l_iX = Convert.ToInt32(l_strValue);
+                        }
+                        else if (l_strField == "y")
+                        {
+                            l_iY = Convert.ToInt32(l_strValue);
+                        }
+                    }
+
+                    if (l_iWidth <= 0)
+                    {
+                        if (l_strType == "logo")
+                            l_iWidth = 448;
+                        else if (l_strType == "seal")
+                            l_iWidth = 64;
+                    }
+                    if (l_iHeight <= 0)
+                    {
+                        if (l_strType == "logo")
+                            l_iHeight = 100;
+                        else if (l_strType == "seal")
+                            l_iWidth = 64;
+                    }
+
+                    if (l_strAlignment == "center")
+                    {
+                        l_iX = l_iX - l_iWidth / 2;
+                    }
+                    else if (l_strAlignment == "right")
+                    {
+                        l_iX = l_iX - l_iWidth;
+                    }
+
+                    if (l_strType == "label")
+                    {
+                        string l_strText = "";
+                        l_iStart = l_strLine.IndexOf('>') + 1;
+                        l_iEnd = l_strLine.IndexOf('<', l_iStart);
+
+                        l_strText = l_strLine.Substring(l_iStart, l_iEnd - l_iStart);
+                        NewLabel(l_strText, l_strAlignment, l_strFont, l_iWidth, l_iHeight, l_iX, l_iY, l_bCond, l_strCondition, l_strCondResource, l_strcondValue);
+                    }
+                    else if (l_strType == "field")
+                    {
+                        NewEntry(l_strResource, l_iId, l_strAlignment, l_strFont, l_iWidth, l_iHeight, l_iX, l_iY, l_bCond, l_strCondition, l_strCondResource, l_strcondValue);
+                    }
+                    else if (l_strType == "shape")
+                    {
+                        NewShape(l_strResource, l_iId, l_strAlignment, l_iLineWidth, l_iWidth, l_iHeight, l_iX, l_iY, l_bCond, l_strCondition, l_strCondResource, l_strcondValue);
+                    }
+                    else if (l_strType == "logo")
+                    {
+                        NewLogo(l_strResource, l_strAlignment, l_iId, l_iWidth, l_iHeight, l_iX, l_iY, l_bCond, l_strCondition, l_strCondResource, l_strcondValue);
+                    }
+                    else if (l_strType == "seal")
+                    {
+                        NewSeal(l_strResource, l_strAlignment, l_iId, l_iWidth, l_iHeight, l_iX, l_iY, l_bCond, l_strCondition, l_strCondResource, l_strcondValue);
+                    }
+                    else if (l_strType == "barcode")
+                    {
+                        NewBarcode(l_strResource, l_strAlignment, l_strOrientation, l_strBarcode, l_iId, l_iWidth, l_iHeight, l_iX, l_iY, l_bCond, l_strCondition, l_strCondResource, l_strcondValue);
+                    }
+                }
+                else if (l_strTypeLine == "/if")
+                {
+                    l_strCondition = "";
+                    l_strCondResource = "";
+                    l_strcondValue = "";
+                    l_bCond = false;
+                }
+            }
+        }
+
         private void Guardar_Etiqueta_Click(object sender, RoutedEventArgs e) //Pone filtros para guardar xml y muestra el dialogo
         {
             dlg_save.DefaultExt = ".xml";
@@ -185,8 +497,9 @@ namespace Encase_XS_WPF
                                                                                             //xml lo que tenemos en los canvas
         {
             //Crea el archivo sobre el que escribimos
-            StreamWriter l_fsXML = new StreamWriter(dlg_save.OpenFile());      
-
+            StreamWriter l_fsXML = new StreamWriter(dlg_save.OpenFile());
+            
+            m_lstLabels.Sort((x, y) => x.type.CompareTo(y.type));
             string l_strAuxOrientation = "";
             switch (labelOrientation) //Switch para elegir orientación de documento
             {
@@ -278,13 +591,13 @@ namespace Encase_XS_WPF
                             {
                                 l_fsXML.WriteLine("\t\t\t<if condition=\"" + m_lstLabels[idx].condition + "\" resource1=\"" + m_lstLabels[idx].cond_resource + "\" value2=\"" + m_lstLabels[idx].cond_value + "\">");
 
-                                l_fsXML.WriteLine("\t\t\t<item type=\"barcode\" id=\"-1\" resource=\"" + barcode_type_H + "\" barcode_type=\"" + m_lstLabels[idx].barcode_type + "\" alignment=\"\" orientation =\"\"  x=\"" + Convert.ToString(PosX) + "\" y=\"" + Convert.ToString(PosY) + "\" width=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Width)) + "\" height=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Height)) + "\"></item>");
+                                l_fsXML.WriteLine("\t\t\t<item type=\"barcode\" id=\"-1\" resource=\"" + barcode_type_H + "\" barcode_type=\"" + m_lstLabels[idx].barcode_type + "\" alignment=\"\" orientation =\"\" x=\"" + Convert.ToString(PosX) + "\" y=\"" + Convert.ToString(PosY) + "\" width=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Width)) + "\" height=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Height)) + "\"></item>");
 
                                 l_fsXML.WriteLine("\t\t\t</if>");
                             }
                             else
                             {
-                                l_fsXML.WriteLine("\t\t\t<item type=\"barcode\" id=\"-1\" resource=\"" + barcode_type_H + "\" barcode_type=\"" + m_lstLabels[idx].barcode_type + "\" alignment=\"\" orientation =\"\"  x=\"" + Convert.ToString(PosX) + "\" y=\"" + Convert.ToString(PosY) + "\" width=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Width)) + "\" height=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Height)) + "\"></item>");
+                                l_fsXML.WriteLine("\t\t\t<item type=\"barcode\" id=\"-1\" resource=\"" + barcode_type_H + "\" barcode_type=\"" + m_lstLabels[idx].barcode_type + "\" alignment=\"\" orientation =\"\" x=\"" + Convert.ToString(PosX) + "\" y=\"" + Convert.ToString(PosY) + "\" width=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Width)) + "\" height=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Height)) + "\"></item>");
 
                             }
                         }
@@ -306,37 +619,51 @@ namespace Encase_XS_WPF
                         }
                         if (m_lstLabels[idx].type == types_items.logo)
                         {
-                            
-                            
+                            if (m_lstLabels[idx].align == "right")
+                            {
+                                PosX = (int)(PosX + m_lstLabels[idx].widget.Width);
+                            }
+                            if (m_lstLabels[idx].align == "center")
+                            {
+                                PosX = (int)(PosX + m_lstLabels[idx].widget.Width / 2);
+                            }
+
                             if (m_lstLabels[idx].condition != "none")
                             {
                                 l_fsXML.WriteLine("\t\t\t<if condition=\"" + m_lstLabels[idx].condition + "\" resource1=\"" + m_lstLabels[idx].cond_resource + "\" value2=\"" + m_lstLabels[idx].cond_value + "\">");
 
-                                l_fsXML.WriteLine("\t\t\t<item type=\"logo\" alignment=\"\" orientation =\"\"  x=\"" + Convert.ToString(PosX) + "\" y=\"" + Convert.ToString(PosY) + "\" width=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Width)) + "\" height=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Height)) + "\"></item>");
+                                l_fsXML.WriteLine("\t\t\t<item type=\"logo\" id=\"-1\" resource=\"header.Logo\" alignment=\"" + m_lstLabels[idx].align + "\" x=\"" + Convert.ToString(PosX) + "\" y=\"" + Convert.ToString(PosY) + "\" width=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Width)) + "\" height=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Height)) + "\"></item>");
 
                                 l_fsXML.WriteLine("\t\t\t</if>");
                             }
                             else
                             {
-                                l_fsXML.WriteLine("\t\t\t<item type=\"logo\" alignment=\"\" orientation =\"\"  x=\"" + Convert.ToString(PosX) + "\" y=\"" + Convert.ToString(PosY) + "\" width=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Width)) + "\" height=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Height)) + "\"></item>");
+                                l_fsXML.WriteLine("\t\t\t<item type=\"logo\" id=\"-1\" resource=\"header.Logo\" alignment=\"" + m_lstLabels[idx].align + "\" x=\"" + Convert.ToString(PosX) + "\" y=\"" + Convert.ToString(PosY) + "\" width=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Width)) + "\" height=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Height)) + "\"></item>");
 
                             }
                         }
                         if (m_lstLabels[idx].type == types_items.seal)
                         {
 
-
+                            if (m_lstLabels[idx].align == "right")
+                            {
+                                PosX = (int)(PosX + m_lstLabels[idx].widget.Width);
+                            }
+                            if (m_lstLabels[idx].align == "center")
+                            {
+                                PosX = (int)(PosX + m_lstLabels[idx].widget.Width / 2);
+                            }
                             if (m_lstLabels[idx].condition != "none")
                             {
                                 l_fsXML.WriteLine("\t\t\t<if condition=\"" + m_lstLabels[idx].condition + "\" resource1=\"" + m_lstLabels[idx].cond_resource + "\" value2=\"" + m_lstLabels[idx].cond_value + "\">");
 
-                                l_fsXML.WriteLine("\t\t\t<item type=\"seal\" id=\"" + m_lstLabels[idx].id + "\" alignment=\"\" orientation =\"\"  x=\"" + Convert.ToString(PosX) + "\" y=\"" + Convert.ToString(PosY) + "\" width=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Width)) + "\" height=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Height)) + "\"></item>");
+                                l_fsXML.WriteLine("\t\t\t<item type=\"seal\" id=\"" + m_lstLabels[idx].id + "\" resource=\"header.Seal\" alignment=\"" + m_lstLabels[idx].align + "\" x=\"" + Convert.ToString(PosX) + "\" y=\"" + Convert.ToString(PosY) + "\" width=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Width)) + "\" height=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Height)) + "\"></item>");
 
                                 l_fsXML.WriteLine("\t\t\t</if>");
                             }
                             else
                             {
-                                l_fsXML.WriteLine("\t\t\t<item type=\"seal\" id=\"" + m_lstLabels[idx].id + "\" alignment=\"\" orientation =\"\"  x=\"" + Convert.ToString(PosX) + "\" y=\"" + Convert.ToString(PosY) + "\" width=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Width)) + "\" height=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Height)) + "\"></item>");
+                                l_fsXML.WriteLine("\t\t\t<item type=\"seal\" id=\"" + m_lstLabels[idx].id + "\" resource=\"header.Seal\" alignment=\"" + m_lstLabels[idx].align + "\" x=\"" + Convert.ToString(PosX) + "\" y=\"" + Convert.ToString(PosY) + "\" width=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Width)) + "\" height=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Height)) + "\"></item>");
 
                             }
                         }
@@ -362,30 +689,6 @@ namespace Encase_XS_WPF
                     }
                     if (m_lstLabels[idx].labelSelec == "resume")
                     {
-                        if (m_lstLabels[idx].type == types_items.lbl)
-                        {
-                            if (m_lstLabels[idx].align == "right")
-                            {
-                                PosX = (int)(PosX + m_lstLabels[idx].widget.Width);
-                            }
-                            if (m_lstLabels[idx].align == "center")
-                            {
-                                PosX = (int)(PosX + m_lstLabels[idx].widget.Width / 2);
-                            }
-                            if (m_lstLabels[idx].condition != "none")
-                            {
-                                l_fsXML.WriteLine("\t\t\t<if condition=\"" + m_lstLabels[idx].condition + "\" resource1=\"" + m_lstLabels[idx].cond_resource + "\" value2=\"" + m_lstLabels[idx].cond_value + "\">");
-
-                                l_fsXML.WriteLine("\t\t\t\t<item type=\"label\" x=\"" + Convert.ToString(PosX) + "\" y=\"" + Convert.ToString(PosY) + "\" alignment=\"" + m_lstLabels[idx].align + "\" width=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Width)) + "\" height=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Height)) + "\" font=\"" + m_lstLabels[idx].font + "  " + bold + " " + m_lstLabels[idx].font_size + "\">" + m_lstLabels[idx].widget.Children.OfType<TextBlock>().First().Text + "</item>");
-
-                                l_fsXML.WriteLine("\t\t\t</if>");
-                            }
-                            else
-                            {
-                                l_fsXML.WriteLine("\t\t\t<item type=\"label\" x=\"" + Convert.ToString(PosX) + "\" y=\"" + Convert.ToString(PosY) + "\" alignment=\"" + m_lstLabels[idx].align + "\" width=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Width)) + "\" height=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Height)) + "\" font=\"" + m_lstLabels[idx].font + " " + bold + " " + m_lstLabels[idx].font_size + "\">" + m_lstLabels[idx].widget.Children.OfType<TextBlock>().First().Text + "</item>");
-
-                            }
-                        }
                         if (m_lstLabels[idx].type == types_items.box)
                         {
                             if (m_lstLabels[idx].condition != "none")
@@ -424,13 +727,13 @@ namespace Encase_XS_WPF
                             {
                                 l_fsXML.WriteLine("\t\t\t<if condition=\"" + m_lstLabels[idx].condition + "\" resource1=\"" + m_lstLabels[idx].cond_resource + "\" value2=\"" + m_lstLabels[idx].cond_value + "\">");
 
-                                l_fsXML.WriteLine("\t\t\t<item type=\"barcode\" id=\"-1\" resource=\"" + barcode_type_H + "\" barcode_type=\"" + m_lstLabels[idx].barcode_type + "\" alignment=\"\" orientation =\"\"  x=\"" + Convert.ToString(PosX) + "\" y=\"" + Convert.ToString(PosY) + "\" width=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Width)) + "\" height=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Height)) + "\"></item>");
+                                l_fsXML.WriteLine("\t\t\t<item type=\"barcode\" id=\"-1\" resource=\"" + barcode_type_H + "\" barcode_type=\"" + m_lstLabels[idx].barcode_type + "\" alignment=\"\" orientation =\"\" x=\"" + Convert.ToString(PosX) + "\" y=\"" + Convert.ToString(PosY) + "\" width=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Width)) + "\" height=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Height)) + "\"></item>");
 
                                 l_fsXML.WriteLine("\t\t\t</if>");
                             }
                             else
                             {
-                                l_fsXML.WriteLine("\t\t\t<item type=\"barcode\" id=\"-1\" resource=\"" + barcode_type_H + "\" barcode_type=\"" + m_lstLabels[idx].barcode_type + "\" alignment=\"\" orientation =\"\"  x=\"" + Convert.ToString(PosX) + "\" y=\"" + Convert.ToString(PosY) + "\" width=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Width)) + "\" height=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Height)) + "\"></item>");
+                                l_fsXML.WriteLine("\t\t\t<item type=\"barcode\" id=\"-1\" resource=\"" + barcode_type_H + "\" barcode_type=\"" + m_lstLabels[idx].barcode_type + "\" alignment=\"\" orientation =\"\" x=\"" + Convert.ToString(PosX) + "\" y=\"" + Convert.ToString(PosY) + "\" width=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Width)) + "\" height=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Height)) + "\"></item>");
 
                             }
                         }
@@ -447,6 +750,56 @@ namespace Encase_XS_WPF
                             else
                             {
                                 l_fsXML.WriteLine("\t\t\t<item type=\"field\" resource=\"" + m_lstLabels[idx].textbox_type + "\" x=\"" + Convert.ToString(PosX) + "\" y=\"" + Convert.ToString(PosY) + "\" alignment=\"" + m_lstLabels[idx].align + "\" width=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Width)) + "\" height=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Height)) + "\" font=\"" + m_lstLabels[idx].font + " " + bold + " " + m_lstLabels[idx].font_size + "\" id=\"" + m_lstLabels[idx].id + "\"></item>");
+
+                            }
+                        }
+                        if (m_lstLabels[idx].type == types_items.logo)
+                        {
+                            if (m_lstLabels[idx].align == "right")
+                            {
+                                PosX = (int)(PosX + m_lstLabels[idx].widget.Width);
+                            }
+                            if (m_lstLabels[idx].align == "center")
+                            {
+                                PosX = (int)(PosX + m_lstLabels[idx].widget.Width / 2);
+                            }
+
+                            if (m_lstLabels[idx].condition != "none")
+                            {
+                                l_fsXML.WriteLine("\t\t\t<if condition=\"" + m_lstLabels[idx].condition + "\" resource1=\"" + m_lstLabels[idx].cond_resource + "\" value2=\"" + m_lstLabels[idx].cond_value + "\">");
+
+                                l_fsXML.WriteLine("\t\t\t<item type=\"logo\" id=\"-1\" resource=\"header.Logo\" alignment=\"" + m_lstLabels[idx].align + "\" x=\"" + Convert.ToString(PosX) + "\" y=\"" + Convert.ToString(PosY) + "\" width=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Width)) + "\" height=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Height)) + "\"></item>");
+
+                                l_fsXML.WriteLine("\t\t\t</if>");
+                            }
+                            else
+                            {
+                                l_fsXML.WriteLine("\t\t\t<item type=\"logo\" id=\"-1\" resource=\"header.Logo\" alignment=\"" + m_lstLabels[idx].align + "\" x=\"" + Convert.ToString(PosX) + "\" y=\"" + Convert.ToString(PosY) + "\" width=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Width)) + "\" height=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Height)) + "\"></item>");
+
+                            }
+                        }
+                        if (m_lstLabels[idx].type == types_items.seal)
+                        {
+
+                            if (m_lstLabels[idx].align == "right")
+                            {
+                                PosX = (int)(PosX + m_lstLabels[idx].widget.Width);
+                            }
+                            if (m_lstLabels[idx].align == "center")
+                            {
+                                PosX = (int)(PosX + m_lstLabels[idx].widget.Width / 2);
+                            }
+                            if (m_lstLabels[idx].condition != "none")
+                            {
+                                l_fsXML.WriteLine("\t\t\t<if condition=\"" + m_lstLabels[idx].condition + "\" resource1=\"" + m_lstLabels[idx].cond_resource + "\" value2=\"" + m_lstLabels[idx].cond_value + "\">");
+
+                                l_fsXML.WriteLine("\t\t\t<item type=\"seal\" id=\"" + m_lstLabels[idx].id + "\" resource=\"header.Seal\" alignment=\"" + m_lstLabels[idx].align + "\" x=\"" + Convert.ToString(PosX) + "\" y=\"" + Convert.ToString(PosY) + "\" width=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Width)) + "\" height=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Height)) + "\"></item>");
+
+                                l_fsXML.WriteLine("\t\t\t</if>");
+                            }
+                            else
+                            {
+                                l_fsXML.WriteLine("\t\t\t<item type=\"seal\" id=\"" + m_lstLabels[idx].id + "\" resource=\"header.Seal\" alignment=\"" + m_lstLabels[idx].align + "\" x=\"" + Convert.ToString(PosX) + "\" y=\"" + Convert.ToString(PosY) + "\" width=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Width)) + "\" height=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Height)) + "\"></item>");
 
                             }
                         }
@@ -562,7 +915,11 @@ namespace Encase_XS_WPF
                 border_thin_selector.IsEnabled = false;
 
             }            
-        }   
+        } 
+        private void Add_Texto_Reader(string l_strText, string l_strAlignment, string l_strFont, string l_iWidth, string l_iHeight, string l_iX, string l_iY, string l_bCond, string l_strCondition, string l_strCondResource, string l_strcondValue)
+        {
+
+        }
         private void Add_Campo_Click(object sender, RoutedEventArgs e)//Añade un objeto tipo Campo
         {
             for (int i = 0; i < m_lstLabels.Count(); i++) //Deselecciona los objetos seleccionados
@@ -788,6 +1145,7 @@ namespace Encase_XS_WPF
                 tb.Width = l_lblitAux.widget.Width;
                 l_lblitAux.widget.Height = 120;
                 tb.Height = l_lblitAux.widget.Height;
+                l_lblitAux.align = "center";
                 l_lblitAux.orientation = "horizontal";//Horizontal por defecto
                 l_lblitAux.type = types_items.logo;//Tipo de elemento ||||ES IMPORTANTE PARA EL FUNCIONAMIENTO
                 l_lblitAux.id = -1;//Cuidado con el tema de los ids
@@ -876,6 +1234,7 @@ namespace Encase_XS_WPF
                 tb.Width = l_lblitAux.widget.Width;
                 l_lblitAux.widget.Height = 50;
                 tb.Height = l_lblitAux.widget.Height;
+                l_lblitAux.align = "center";
                 l_lblitAux.orientation = "horizontal";//Horizontal por defecto
                 l_lblitAux.type = types_items.seal;//Tipo de elemento ||||ES IMPORTANTE PARA EL FUNCIONAMIENTO
                 seal_counter++;
@@ -952,24 +1311,28 @@ namespace Encase_XS_WPF
                 //Estas propiedades van cambiando dependiendo del tipo de elemento que hemos añadido,
                 //usando o no las propiedades que necesitamos
                 tb.Margin = new Thickness(5, 2, 2, 2);
-                l_lblitAux.widget.MinHeight = 10;
-                l_lblitAux.widget.MinWidth = 10;
+                l_lblitAux.widget.MinHeight = 99;
+                l_lblitAux.widget.MaxHeight = 99;
+                l_lblitAux.widget.MinWidth = 209;
+                l_lblitAux.widget.MaxWidth = 209;
                 rect.Fill = myBrush;
                 rect.StrokeThickness = 1;
                 rect.Stroke = Brushes.Black;
-                l_lblitAux.widget.Width = 180;
+                l_lblitAux.widget.Width = 209;
                 l_lblitAux.widget.Background = Brushes.LightGreen;
                 l_lblitAux.widget.Opacity = 0.5;
                 l_lblitAux.condition = "none";
                 select_condition_object(l_lblitAux.condition);
                 tb.Width = l_lblitAux.widget.Width;
-                l_lblitAux.widget.Height = 90;
+                l_lblitAux.widget.Height = 99;
                 tb.Height = l_lblitAux.widget.Height;
                 l_lblitAux.orientation = "horizontal";//Horizontal por defecto
                 l_lblitAux.type = types_items.barcode;//Tipo de elemento ||||ES IMPORTANTE PARA EL FUNCIONAMIENTO
                 l_lblitAux.id = -1;//Cuidado con el tema de los ids
                 l_lblitAux.is_selected = true;
                 l_lblitAux.widget.Focus();
+                l_lblitAux.barcode_type = "ean13";
+                select_barcode_type(l_lblitAux.barcode_type);
                 //Se crea el grupo de eventos a los que reaccionará
                 l_lblitAux.widget.MouseLeftButtonDown += Widget_MouseLeftButtonDown;
                 l_lblitAux.widget.MouseMove += Widget_MouseMove;
@@ -1256,6 +1619,8 @@ namespace Encase_XS_WPF
 
                             select_type_lbl(l_lbl.textbox_type);
                             select_alignment_object(l_lbl.align);
+                            id_update_toolbar(l_lbl.id);
+                            select_barcode_type(l_lbl.barcode_type);
 
                             Ancho_Objeto.Text = Convert.ToString(widthInt / 8);
                             Alto_Objeto.Text = Convert.ToString(heighInt / 8);
@@ -2153,7 +2518,6 @@ namespace Encase_XS_WPF
                     lbl.cursiva = false;
                     lbl.textbox_type = "line.Description";
                     lbl.widget.Children.OfType<TextBlock>().First().Text = lbl.textbox_type;
-                    lbl.id = -1;
                     m_lstLabels[i] = lbl;
                 }
             }
@@ -2765,7 +3129,29 @@ namespace Encase_XS_WPF
         {
             id_type.Text = Convert.ToString(id);
         }
+        public void select_barcode_type (string p_barcode_type)
+        {
+            if (p_barcode_type == "ean8")
+            {
+                barcode_ean8.IsSelected = true;
+            }
+            if (p_barcode_type == "ean13")
+            {
+                barcode_ean13.IsSelected = true;
+            }
+            if (p_barcode_type == "ean14")
+            {
+                barcode_ean14.IsSelected = true;
+            }
+            if (p_barcode_type == "code39")
+            {
+                barcode_code39.IsSelected = true;
+            }
+            if (p_barcode_type == "code128")
+            {
+                barcode_code128.IsSelected = true;
+            }
+        }
         #endregion        
     }
 }
-;

@@ -154,15 +154,59 @@ namespace Encase_XS_WPF
             ruler1h.MaxValue = cnv1.Width/8;
             ruler1v.MaxValue = cnv1.Height/8;
             ruler2h.MaxValue = cnv2.Width/8;
-            ruler2v.MaxValue = cnv2.Height/8;              
+            ruler2v.MaxValue = cnv2.Height/8;
             //Añade el canvas al StackPanel de diseño
-            Design_Frame1.Children.Add(cnv1);     
-            Design_Frame2.Children.Add(cnv2);            
+            
+            Design_Frame1.Children.Add(cnv1);
+            
+            Design_Frame2.Children.Add(cnv2);
             //Centra el foco por defecto en el Tab1 "WEIGHT"
             Tbt1.Focus();
             //Actualiza el valor de TextBox de Alto y ancho de documento
             
         }
+        public void Crear_Etiqueta_Reader(string m_nombre_Etiqueta, int m_ancho_Etiqueta, int m_alto_Etiqueta)
+        {
+            
+            //Da el tamaño al canvas introducido en la ventana de creación de etiqueta
+            cnv1.Width = m_ancho_Etiqueta * 8;
+            cnv2.Width = m_ancho_Etiqueta * 8;
+            cnv1.Height = m_alto_Etiqueta * 8;
+            cnv2.Height = m_alto_Etiqueta * 8;
+            //Actualiza el Textbox de ancho/alto del documento con los datos introducidos
+            Document_Height.Text = (cnv1.Height / 8).ToString();
+            Document_Width.Text = (cnv1.Width / 8).ToString();
+            //Pone el fondo del canvas de color blanco
+            cnv1.Background = Brushes.White;
+            cnv2.Background = Brushes.White;
+            //Lo alinea a la izquierda
+            cnv1.HorizontalAlignment = HorizontalAlignment.Left;
+            cnv2.HorizontalAlignment = HorizontalAlignment.Left;
+            //Le añade margenes
+            cnv1.Margin.Equals(5);
+            cnv2.Margin.Equals(5);
+            cnv1.Margin.Top.Equals(5);
+            cnv2.Margin.Top.Equals(5);
+            //Actualiza la TextBox de nombre de documento con el nombre que le hayamos dado en la ventana
+            Nombre_Tipo_Documento.Text = m_nombre_Etiqueta;
+            //Cambia el tamaño de la regla y su valor máximo para que sea igual al del canvas
+            ruler1h.Width = cnv1.Width + 6;
+            ruler1v.Height = cnv1.Height + 6;
+            ruler2h.Width = cnv2.Width + 6;
+            ruler2v.Height = cnv2.Height + 6;
+            ruler1h.MaxValue = cnv1.Width / 8;
+            ruler1v.MaxValue = cnv1.Height / 8;
+            ruler2h.MaxValue = cnv2.Width / 8;
+            ruler2v.MaxValue = cnv2.Height / 8;
+            ////Añade el canvas al StackPanel de diseño
+            //Design_Frame1.Children.Add(cnv1);     
+            //Design_Frame2.Children.Add(cnv2);            
+            //Centra el foco por defecto en el Tab1 "WEIGHT"
+            Tbt1.Focus();
+            //Actualiza el valor de TextBox de Alto y ancho de documento
+
+        }
+
         #endregion
         #region Eventos botones principales //Eventos de los principales botones de creación de objetos
         private void Nueva_Etiqueta_Click(object sender, RoutedEventArgs e)//Abre la Ventana de creación de etiqueta
@@ -173,12 +217,23 @@ namespace Encase_XS_WPF
         private void Abrir_Etiqueta_Click(object sender, RoutedEventArgs e)//Abre el dialogo para abrir un xml
         {
             //File opener
-            OpenFile_Click();
+            dlg.DefaultExt = ".xml";
+            dlg.Filter = "XML Files (*.xml)|*.xml";
             dlg.FileOk += Dlg_FileOk;
+            dlg.FileName = m_nombre_Etiqueta;
+            dlg.ShowDialog();
+            
         }
-
         private void Dlg_FileOk(object sender, CancelEventArgs e)
         {
+            
+            //Limpia los datos de las etiquetas existentes
+            cnv1.Children.Clear();
+            cnv2.Children.Clear();
+            m_lstLabels.Clear();
+            lbl_cnt_weight = 0;
+            lbl_cnt_resume = 0;
+
             string l_strLine;
             System.IO.StreamReader l_fsXML = new System.IO.StreamReader(dlg.OpenFile());
 
@@ -187,6 +242,7 @@ namespace Encase_XS_WPF
 
             string l_strCondition = "", l_strCondResource = "", l_strcondValue = "";
             bool l_bCond = false;
+            string l_strName_gen = "";
 
             while (!l_fsXML.EndOfStream)
             {
@@ -204,8 +260,6 @@ namespace Encase_XS_WPF
                     l_iEnd = l_iEndItem;
 
 
-
-
                 l_strTypeLine = l_strLine.Substring(l_iTypeLine, l_iEnd - l_iTypeLine);
 
                 if (l_strTypeLine == "report")
@@ -213,6 +267,7 @@ namespace Encase_XS_WPF
                     int l_iWidth = 0, l_iHeight = 0;
                     string l_strOrientation = "Portrait";
                     string l_strName = "";
+                    l_strName_gen = "";
 
                     while ((l_iEnd < l_iEndItem))
                     {
@@ -246,6 +301,7 @@ namespace Encase_XS_WPF
                         else if (l_strField == "name")
                         {
                             l_strName = l_strValue;
+                            
                         }
                         else if (l_strField == "page") { }
                         else if (l_strField == "width") { }
@@ -319,6 +375,7 @@ namespace Encase_XS_WPF
                         if (l_strField == "name")
                         {
                             l_strName = l_strValue;
+                            l_strName_gen = l_strValue;
                         }
                         else if (l_strField == "width")
                         {
@@ -339,7 +396,7 @@ namespace Encase_XS_WPF
                             l_iY = Convert.ToInt32(l_strValue);
                         }
                     }
-                    Crear_Etiqueta(dlg.FileName, l_iWidth, l_iHeight);
+                    Crear_Etiqueta_Reader(dlg.FileName, l_iWidth/8, l_iHeight/8);
 
                     //l_iWidth, l_iHeight, l_iX, l_iY, l_strName, l_bCond, l_strCondition, l_strCondResource, l_strcondValue
                     l_bCond = false;
@@ -444,7 +501,7 @@ namespace Encase_XS_WPF
                     {
                         l_iX = l_iX - l_iWidth;
                     }
-
+                    
                     if (l_strType == "label")
                     {
                         string l_strText = "";
@@ -452,27 +509,27 @@ namespace Encase_XS_WPF
                         l_iEnd = l_strLine.IndexOf('<', l_iStart);
 
                         l_strText = l_strLine.Substring(l_iStart, l_iEnd - l_iStart);
-                        NewLabel(l_strText, l_strAlignment, l_strFont, l_iWidth, l_iHeight, l_iX, l_iY, l_bCond, l_strCondition, l_strCondResource, l_strcondValue);
+                        Add_Texto_Reader(l_strText, l_strAlignment, l_strFont, l_iWidth, l_iHeight, l_iX, l_iY, l_bCond, l_strCondition, l_strCondResource, l_strcondValue, l_strName_gen);
                     }
                     else if (l_strType == "field")
                     {
-                        NewEntry(l_strResource, l_iId, l_strAlignment, l_strFont, l_iWidth, l_iHeight, l_iX, l_iY, l_bCond, l_strCondition, l_strCondResource, l_strcondValue);
+                        Add_Campo_Reader(l_strResource, l_iId, l_strAlignment, l_strFont, l_iWidth, l_iHeight, l_iX, l_iY, l_bCond, l_strCondition, l_strCondResource, l_strcondValue, l_strName_gen);
                     }
                     else if (l_strType == "shape")
                     {
-                        NewShape(l_strResource, l_iId, l_strAlignment, l_iLineWidth, l_iWidth, l_iHeight, l_iX, l_iY, l_bCond, l_strCondition, l_strCondResource, l_strcondValue);
+                       Add_Cajeado_Reader(l_iId, l_strAlignment, l_iLineWidth, l_iWidth, l_iHeight, l_iX, l_iY, l_bCond, l_strCondition, l_strCondResource, l_strcondValue, l_strName_gen);
                     }
                     else if (l_strType == "logo")
                     {
-                        NewLogo(l_strResource, l_strAlignment, l_iId, l_iWidth, l_iHeight, l_iX, l_iY, l_bCond, l_strCondition, l_strCondResource, l_strcondValue);
+                        Add_Imagen_Reader(l_strResource, l_strAlignment, l_iId, l_iWidth, l_iHeight, l_iX, l_iY, l_bCond, l_strCondition, l_strCondResource, l_strcondValue, l_strName_gen);
                     }
                     else if (l_strType == "seal")
                     {
-                        NewSeal(l_strResource, l_strAlignment, l_iId, l_iWidth, l_iHeight, l_iX, l_iY, l_bCond, l_strCondition, l_strCondResource, l_strcondValue);
+                        Add_Sello_Reader(l_strResource, l_strAlignment, l_iId, l_iWidth, l_iHeight, l_iX, l_iY, l_bCond, l_strCondition, l_strCondResource, l_strcondValue, l_strName_gen);
                     }
                     else if (l_strType == "barcode")
                     {
-                        NewBarcode(l_strResource, l_strAlignment, l_strOrientation, l_strBarcode, l_iId, l_iWidth, l_iHeight, l_iX, l_iY, l_bCond, l_strCondition, l_strCondResource, l_strcondValue);
+                        Add_Barcode_Reader(l_strResource, l_strAlignment, l_iId, l_iWidth, l_iHeight, l_iX, l_iY, l_bCond, l_strCondition, l_strCondResource, l_strcondValue, l_strName_gen);
                     }
                 }
                 else if (l_strTypeLine == "/if")
@@ -483,8 +540,8 @@ namespace Encase_XS_WPF
                     l_bCond = false;
                 }
             }
+            l_fsXML.Close();
         }
-
         private void Guardar_Etiqueta_Click(object sender, RoutedEventArgs e) //Pone filtros para guardar xml y muestra el dialogo
         {
             dlg_save.DefaultExt = ".xml";
@@ -603,6 +660,14 @@ namespace Encase_XS_WPF
                         }
                         if (m_lstLabels[idx].type == types_items.field)
                         {
+                            if (m_lstLabels[idx].align == "right")
+                            {
+                                PosX = (int)(PosX + m_lstLabels[idx].widget.Width);
+                            }
+                            if (m_lstLabels[idx].align == "center")
+                            {
+                                PosX = (int)(PosX + m_lstLabels[idx].widget.Width / 2);
+                            }
                             if (m_lstLabels[idx].condition != "none")
                             {
                                 l_fsXML.WriteLine("\t\t\t<if condition=\"" + m_lstLabels[idx].condition + "\" resource1=\"" + m_lstLabels[idx].cond_resource + "\" value2=\"" + m_lstLabels[idx].cond_value + "\">");
@@ -689,6 +754,31 @@ namespace Encase_XS_WPF
                     }
                     if (m_lstLabels[idx].labelSelec == "resume")
                     {
+                        if (m_lstLabels[idx].type == types_items.lbl)
+                        {
+                            if (m_lstLabels[idx].align == "right")
+                            {
+                                PosX = (int)(PosX + m_lstLabels[idx].widget.Width);
+                            }
+                            if (m_lstLabels[idx].align == "center")
+                            {
+                                PosX = (int)(PosX + m_lstLabels[idx].widget.Width / 2);
+                            }
+
+                            if (m_lstLabels[idx].condition != "none")
+                            {
+                                l_fsXML.WriteLine("\t\t\t<if condition=\"" + m_lstLabels[idx].condition + "\" resource1=\"" + m_lstLabels[idx].cond_resource + "\" value2=\"" + m_lstLabels[idx].cond_value + "\">");
+
+                                l_fsXML.WriteLine("\t\t\t\t<item type=\"label\" x=\"" + Convert.ToString(PosX) + "\" y=\"" + Convert.ToString(PosY) + "\" alignment=\"" + m_lstLabels[idx].align + "\" width=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Width)) + "\" height=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Height)) + "\" font=\"" + m_lstLabels[idx].font + "  " + bold + " " + m_lstLabels[idx].font_size + "\">" + m_lstLabels[idx].widget.Children.OfType<TextBlock>().First().Text + "</item>");
+
+                                l_fsXML.WriteLine("\t\t\t</if>");
+                            }
+                            else
+                            {
+                                l_fsXML.WriteLine("\t\t\t<item type=\"label\" x=\"" + Convert.ToString(PosX) + "\" y=\"" + Convert.ToString(PosY) + "\" alignment=\"" + m_lstLabels[idx].align + "\" width=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Width)) + "\" height=\"" + Convert.ToString(Decimal.Truncate((decimal)m_lstLabels[idx].widget.Height)) + "\" font=\"" + m_lstLabels[idx].font + " " + bold + " " + m_lstLabels[idx].font_size + "\">" + m_lstLabels[idx].widget.Children.OfType<TextBlock>().First().Text + "</item>");
+
+                            }
+                        }
                         if (m_lstLabels[idx].type == types_items.box)
                         {
                             if (m_lstLabels[idx].condition != "none")
@@ -739,6 +829,14 @@ namespace Encase_XS_WPF
                         }
                         if (m_lstLabels[idx].type == types_items.field)
                         {
+                            if (m_lstLabels[idx].align == "right")
+                            {
+                                PosX = (int)(PosX + m_lstLabels[idx].widget.Width);
+                            }
+                            if (m_lstLabels[idx].align == "center")
+                            {
+                                PosX = (int)(PosX + m_lstLabels[idx].widget.Width / 2);
+                            }
                             if (m_lstLabels[idx].condition != "none")
                             {
                                 l_fsXML.WriteLine("\t\t\t<if condition=\"" + m_lstLabels[idx].condition + "\" resource1=\"" + m_lstLabels[idx].cond_resource + "\" value2=\"" + m_lstLabels[idx].cond_value + "\">");
@@ -916,10 +1014,6 @@ namespace Encase_XS_WPF
 
             }            
         } 
-        private void Add_Texto_Reader(string l_strText, string l_strAlignment, string l_strFont, string l_iWidth, string l_iHeight, string l_iX, string l_iY, string l_bCond, string l_strCondition, string l_strCondResource, string l_strcondValue)
-        {
-
-        }
         private void Add_Campo_Click(object sender, RoutedEventArgs e)//Añade un objeto tipo Campo
         {
             for (int i = 0; i < m_lstLabels.Count(); i++) //Deselecciona los objetos seleccionados
@@ -1400,6 +1494,531 @@ namespace Encase_XS_WPF
         private void Salir_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+        #endregion
+        #region Funciones para pintar las etiquetas leídas
+        private void Add_Texto_Reader(string l_strText, string l_strAlignment, string l_strFont, double l_iWidth, int l_iHeight, int l_iX, int l_iY, bool l_bCond, string l_strCondition, string l_strCondResource, string l_strcondValue, string l_strName)
+        {
+            string[] font_array = l_strFont.Split(' ');
+            label_item l_lblitAux = new label_item();//Crea la struct del objeto
+            l_lblitAux.widget = new Grid();//El widget principal es de tipo grid
+            TextBlock tb = new TextBlock();//Se crea el subtipo textblock para mostrarlo dentro del grid
+            Rectangle rect = new Rectangle();//Se crea un rectángulo para dibujar el borde
+            //Propiedades de los elementos
+            //Estas propiedades van cambiando dependiendo del tipo de elemento que hemos añadido,
+            //usando o no las propiedades que necesitamos
+            tb.Margin = new Thickness(5, 2, 2, 2);
+            l_lblitAux.widget.MinHeight = 10;
+            l_lblitAux.widget.MinWidth = 10;
+            rect.Fill = Brushes.Transparent;
+            rect.StrokeThickness = 1;
+            rect.StrokeDashArray = new DoubleCollection(new double[] { 4, 4 });
+
+            rect.SnapsToDevicePixels = true;
+            rect.Stroke = Brushes.Black;
+            l_lblitAux.widget.Width = l_iWidth;
+            tb.Width = l_lblitAux.widget.Width;
+            l_lblitAux.widget.Height = l_iHeight;
+            tb.Height = l_lblitAux.widget.Height;
+            l_lblitAux.orientation = "horizontal";//Horizontal por defecto
+            l_lblitAux.type = types_items.lbl;
+            l_lblitAux.id = -1;//Cuidado con el tema de los ids                
+            l_lblitAux.is_selected = false;
+            l_lblitAux.font = font_array[0];
+            select_font_object(l_lblitAux.font);
+            l_lblitAux.font_size = Convert.ToInt32(font_array.Last());
+            size_font_object.Text = Convert.ToString(l_lblitAux.font_size);
+            l_lblitAux.widget.Background = Brushes.Transparent;
+            l_lblitAux.widget.Focus();
+            l_lblitAux.align = l_strAlignment;
+            select_alignment_object(l_lblitAux.align);
+            //Actualiza los datos de condición del TextBox
+            l_lblitAux.condition = l_strCondition;
+            l_lblitAux.cond_resource = l_strCondResource;
+            l_lblitAux.cond_value = l_strcondValue;
+            //Se crea el grupo de eventos a los que reaccionará
+            l_lblitAux.widget.MouseLeftButtonDown += Widget_MouseLeftButtonDown;
+            l_lblitAux.widget.MouseMove += Widget_MouseMove;
+            l_lblitAux.widget.MouseLeftButtonUp += Widget_MouseLeftButtonUp;
+            l_lblitAux.widget.MouseRightButtonDown += Widget_MouseRightButtonDown;
+            l_lblitAux.widget.MouseRightButtonUp += Widget_MouseRightButtonUp;
+
+            //Actualiza el textbox de ancho objeto con el valor puesto por defecto
+            Ancho_Objeto.Text = Convert.ToString(l_lblitAux.widget.Width / 8);
+            Alto_Objeto.Text = Convert.ToString(l_lblitAux.widget.Height / 8);
+
+            //Se posiciona el elemento en el canvas
+            Canvas.SetLeft(l_lblitAux.widget, l_iX);
+            Canvas.SetTop(l_lblitAux.widget, l_iY);
+            Canvas.SetZIndex(l_lblitAux.widget, 0);
+            //Se añade el elemento al canvas dependiendo del 'Tab' seleccionado
+            if (l_strName == "weight" || l_strName == "Weight" || l_strName == "WEIGHT")
+            {
+                l_lblitAux.weight_num = lbl_cnt_weight;
+                lbl_cnt_weight++;
+                l_lblitAux.labelSelec = "weight";
+                l_lblitAux.widget.Name = "lbl_weight_" + lbl_cnt_weight;
+                tb.Text = l_strText;
+                Text_tb.Text = tb.Text;
+                cnv1.Children.Add(l_lblitAux.widget);
+            }
+            else if (l_strName == "resume" || l_strName == "Resume" || l_strName == "RESUME")
+            {
+                l_lblitAux.resume_num = lbl_cnt_resume;
+                lbl_cnt_resume++;
+                l_lblitAux.labelSelec = "resume";
+                l_lblitAux.widget.Name = "lbl_resume_" + lbl_cnt_resume;
+                tb.Text = l_strText;
+                Text_tb.Text = tb.Text;
+                cnv2.Children.Add(l_lblitAux.widget);
+            }
+            l_lblitAux.widget.Children.Add(rect);//Se le añade al grid el rectángulo
+            l_lblitAux.widget.Children.Add(tb);//Se le añade al grid el textblock                
+            //Se le asigna un número a su variable que controla que número de elemento en
+            //la aplicacion en general
+            l_lblitAux.idCount = m_lstLabels.Count();
+            lbl_single_select = l_lblitAux.idCount;
+            m_lstLabels.Add(l_lblitAux);
+
+
+        }
+        private void Add_Campo_Reader(string l_strResource, int l_iId, string l_strAlignment, string l_strFont, int l_iWidth, int l_iHeight, int l_iX, int l_iY, bool l_bCond, string l_strCondition, string l_strCondResource, string l_strcondValue, string l_strName)
+        {
+            string[] font_array = l_strFont.Split(' ');
+            label_item l_lblitAux = new label_item();//Crea la struct del objeto
+            l_lblitAux.widget = new Grid();//El widget principal es de tipo grid
+            TextBlock tb = new TextBlock();//Se crea el subtipo textblock para mostrarlo dentro del grid
+            Rectangle rect = new Rectangle();//Se crea un rectángulo para dibujar el borde
+            //Propiedades de los elementos
+            //Estas propiedades van cambiando dependiendo del tipo de elemento que hemos añadido,
+            //usando o no las propiedades que necesitamos
+            tb.Margin = new Thickness(5, 2, 2, 2);
+            l_lblitAux.widget.MinHeight = 10;
+            l_lblitAux.widget.MinWidth = 10;
+            rect.Fill = Brushes.Transparent;
+            rect.StrokeThickness = 1;
+            rect.StrokeDashArray = new DoubleCollection(new double[] { 4, 4 });
+
+            rect.SnapsToDevicePixels = true;
+            rect.Stroke = Brushes.Black;
+            l_lblitAux.widget.Width = l_iWidth;
+            tb.Width = l_lblitAux.widget.Width;
+            l_lblitAux.widget.Height = l_iHeight;
+            tb.Height = l_lblitAux.widget.Height;
+            l_lblitAux.orientation = "horizontal";//Horizontal por defecto
+            l_lblitAux.type = types_items.field;
+            l_lblitAux.id = l_iId;//Cuidado con el tema de los ids  
+            l_lblitAux.font = font_array[0];
+            l_lblitAux.font_size = Convert.ToInt32(font_array.Last());
+            if(l_strAlignment == "left")
+            {
+                tb.TextAlignment = TextAlignment.Left;
+            }
+            else if (l_strAlignment == "right")
+            {
+                tb.TextAlignment = TextAlignment.Right;
+            }
+            else if (l_strAlignment == "center")
+            {
+                tb.TextAlignment = TextAlignment.Center;
+            }
+            l_lblitAux.widget.Background = Brushes.Transparent;
+            l_lblitAux.widget.Focus();
+            l_lblitAux.align = l_strAlignment;
+            l_lblitAux.textbox_type = l_strResource;
+            //Actualiza los datos de condición del TextBox
+            l_lblitAux.condition = l_strCondition;
+            l_lblitAux.cond_resource = l_strCondResource;
+            l_lblitAux.cond_value = l_strcondValue;
+            //Se crea el grupo de eventos a los que reaccionará
+            l_lblitAux.widget.MouseLeftButtonDown += Widget_MouseLeftButtonDown;
+            l_lblitAux.widget.MouseMove += Widget_MouseMove;
+            l_lblitAux.widget.MouseLeftButtonUp += Widget_MouseLeftButtonUp;
+            l_lblitAux.widget.MouseRightButtonDown += Widget_MouseRightButtonDown;
+            l_lblitAux.widget.MouseRightButtonUp += Widget_MouseRightButtonUp;
+
+            //Actualiza el textbox de ancho objeto con el valor puesto por defecto
+            Ancho_Objeto.Text = Convert.ToString(l_lblitAux.widget.Width / 8);
+            Alto_Objeto.Text = Convert.ToString(l_lblitAux.widget.Height / 8);
+            int PosX = l_iX;
+            int PosY = l_iY;
+            
+            if (l_strAlignment == "right")
+            {
+                PosX = l_iX;
+            }
+            if (l_strAlignment == "center")
+            {
+                PosX = l_iX;
+            }
+            //Se posiciona el elemento en el canvas
+            Canvas.SetLeft(l_lblitAux.widget, PosX);
+            Canvas.SetTop(l_lblitAux.widget, PosY);
+            Canvas.SetZIndex(l_lblitAux.widget, 0);
+            //Se añade el elemento al canvas dependiendo del 'Tab' seleccionado
+            if (l_strName == "weight" || l_strName == "Weight" || l_strName == "WEIGHT")
+            {
+                l_lblitAux.weight_num = lbl_cnt_weight;
+                lbl_cnt_weight++;
+                l_lblitAux.labelSelec = "weight";
+                l_lblitAux.widget.Name = "field_weight_" + lbl_cnt_weight;
+                tb.Text = l_strResource;
+                Text_tb.Text = tb.Text;
+                cnv1.Children.Add(l_lblitAux.widget);
+            }
+            else if (l_strName == "resume" || l_strName == "Resume" || l_strName == "RESUME")
+            {
+                l_lblitAux.resume_num = lbl_cnt_resume;
+                lbl_cnt_resume++;
+                l_lblitAux.labelSelec = "resume";
+                l_lblitAux.widget.Name = "field_resume_" + lbl_cnt_resume;
+                tb.Text = tb.Text = l_strResource;
+                Text_tb.Text = tb.Text;
+                cnv2.Children.Add(l_lblitAux.widget);
+            }
+            l_lblitAux.widget.Children.Add(rect);//Se le añade al grid el rectángulo
+            l_lblitAux.widget.Children.Add(tb);//Se le añade al grid el textblock                
+            //Se le asigna un número a su variable que controla que número de elemento en
+            //la aplicacion en general
+            l_lblitAux.idCount = m_lstLabels.Count();
+            lbl_single_select = l_lblitAux.idCount;
+            m_lstLabels.Add(l_lblitAux);
+
+        }
+        private void Add_Cajeado_Reader(int l_iId, string l_strAlignment, int l_iLineWidth, int l_iWidth, int l_iHeight, int l_iX, int l_iY, bool l_bCond, string l_strCondition, string l_strCondResource, string l_strcondValue, string l_strName)
+        {
+            label_item l_lblitAux = new label_item();//Crea la struct del objeto
+            l_lblitAux.widget = new Grid();//El widget principal es de tipo grid
+            TextBlock tb = new TextBlock();//Se crea el subtipo textblock para mostrarlo dentro del grid
+            Rectangle rect = new Rectangle();//Se crea un rectángulo para dibujar el borde
+            //Propiedades de los elementos
+            //Estas propiedades van cambiando dependiendo del tipo de elemento que hemos añadido,
+            //usando o no las propiedades que necesitamos
+            tb.Margin = new Thickness(5, 2, 2, 2);
+            l_lblitAux.widget.MinHeight = 10;
+            l_lblitAux.widget.MinWidth = 10;
+            rect.Fill = Brushes.Transparent;
+            rect.StrokeThickness = l_iLineWidth;
+
+            rect.SnapsToDevicePixels = true;
+            rect.Stroke = Brushes.Black;
+            l_lblitAux.widget.Width = l_iWidth;
+            tb.Width = l_lblitAux.widget.Width;
+            l_lblitAux.widget.Height = l_iHeight;
+            tb.Height = l_lblitAux.widget.Height;
+            l_lblitAux.orientation = "horizontal";//Horizontal por defecto
+            l_lblitAux.type = types_items.box;
+            l_lblitAux.id = l_iId;//Cuidado con el tema de los ids 
+            size_font_object.Text = Convert.ToString(l_lblitAux.font_size);
+            l_lblitAux.widget.Background = Brushes.Transparent;
+            l_lblitAux.widget.Focus();
+            l_lblitAux.align = l_strAlignment;
+            l_lblitAux.textbox_type = "box";
+            //Actualiza los datos de condición del TextBox
+            l_lblitAux.condition = l_strCondition;
+            l_lblitAux.cond_resource = l_strCondResource;
+            l_lblitAux.cond_value = l_strcondValue;
+            //Se crea el grupo de eventos a los que reaccionará
+            l_lblitAux.widget.MouseLeftButtonDown += Widget_MouseLeftButtonDown;
+            l_lblitAux.widget.MouseMove += Widget_MouseMove;
+            l_lblitAux.widget.MouseLeftButtonUp += Widget_MouseLeftButtonUp;
+            l_lblitAux.widget.MouseRightButtonDown += Widget_MouseRightButtonDown;
+            l_lblitAux.widget.MouseRightButtonUp += Widget_MouseRightButtonUp;
+
+            //Actualiza el textbox de ancho objeto con el valor puesto por defecto
+            Ancho_Objeto.Text = Convert.ToString(l_lblitAux.widget.Width / 8);
+            Alto_Objeto.Text = Convert.ToString(l_lblitAux.widget.Height / 8);
+
+            //Se posiciona el elemento en el canvas
+            Canvas.SetLeft(l_lblitAux.widget, l_iX);
+            Canvas.SetTop(l_lblitAux.widget, l_iY);
+            Canvas.SetZIndex(l_lblitAux.widget, 0);
+            //Se añade el elemento al canvas dependiendo del 'Tab' seleccionado
+            if (l_strName == "weight" || l_strName == "Weight" || l_strName == "WEIGHT")
+            {
+                l_lblitAux.weight_num = lbl_cnt_weight;
+                lbl_cnt_weight++;
+                l_lblitAux.labelSelec = "weight";
+                l_lblitAux.widget.Name = "box_weight_" + lbl_cnt_weight;
+                Text_tb.Text = tb.Text;
+                cnv1.Children.Add(l_lblitAux.widget);
+            }
+            else if (l_strName == "resume" || l_strName == "Resume" || l_strName == "RESUME")
+            {
+                l_lblitAux.resume_num = lbl_cnt_resume;
+                lbl_cnt_resume++;
+                l_lblitAux.labelSelec = "resume";
+                l_lblitAux.widget.Name = "box_resume_" + lbl_cnt_resume;
+                Text_tb.Text = tb.Text;
+                cnv2.Children.Add(l_lblitAux.widget);
+            }
+            l_lblitAux.widget.Children.Add(rect);//Se le añade al grid el rectángulo
+            l_lblitAux.widget.Children.Add(tb);//Se le añade al grid el textblock                
+            //Se le asigna un número a su variable que controla que número de elemento en
+            //la aplicacion en general
+            l_lblitAux.idCount = m_lstLabels.Count();
+            lbl_single_select = l_lblitAux.idCount;
+            m_lstLabels.Add(l_lblitAux);
+
+        }
+        private void Add_Imagen_Reader(string l_strResource, string l_strAlignment, int l_iId, int l_iWidth, int l_iHeight, int l_iX, int l_iY, bool l_bCond, string l_strCondition, string l_strCondResource, string l_strcondValue, string l_strName)
+        {
+            ImageBrush myBrush = new ImageBrush();
+            myBrush.ImageSource = new BitmapImage(ResourceAccessor.Get("Resource/logo_background.png"));
+            label_item l_lblitAux = new label_item();//Crea la struct del objeto
+            l_lblitAux.widget = new Grid();//El widget principal es de tipo grid
+            TextBlock tb = new TextBlock();//Se crea el subtipo textblock para mostrarlo dentro del grid
+            Rectangle rect = new Rectangle();//Se crea un rectángulo para dibujar el borde
+            //Propiedades de los elementos
+            //Estas propiedades van cambiando dependiendo del tipo de elemento que hemos añadido,
+            //usando o no las propiedades que necesitamos
+            tb.Margin = new Thickness(5, 2, 2, 2);
+            l_lblitAux.widget.MinHeight = 10;
+            l_lblitAux.widget.MinWidth = 10;
+            rect.Fill = myBrush;
+            rect.StrokeThickness = 1;
+            rect.SnapsToDevicePixels = true;
+            rect.Stroke = Brushes.Black;
+            l_lblitAux.widget.Width = l_iWidth;
+            tb.Width = l_lblitAux.widget.Width;
+            l_lblitAux.widget.Height = l_iHeight;
+            tb.Height = l_lblitAux.widget.Height;
+            l_lblitAux.orientation = "horizontal";//Horizontal por defecto
+            l_lblitAux.type = types_items.logo;
+            l_lblitAux.id = l_iId;//Cuidado con el tema de los ids 
+            size_font_object.Text = Convert.ToString(l_lblitAux.font_size);
+            l_lblitAux.widget.Background = Brushes.Transparent;
+            l_lblitAux.widget.Focus();
+            l_lblitAux.align = l_strAlignment;
+            l_lblitAux.textbox_type = "box";
+            //Actualiza los datos de condición del TextBox
+            l_lblitAux.condition = l_strCondition;
+            l_lblitAux.cond_resource = l_strCondResource;
+            l_lblitAux.cond_value = l_strcondValue;
+            //Se crea el grupo de eventos a los que reaccionará
+            l_lblitAux.widget.MouseLeftButtonDown += Widget_MouseLeftButtonDown;
+            l_lblitAux.widget.MouseMove += Widget_MouseMove;
+            l_lblitAux.widget.MouseLeftButtonUp += Widget_MouseLeftButtonUp;
+            l_lblitAux.widget.MouseRightButtonDown += Widget_MouseRightButtonDown;
+            l_lblitAux.widget.MouseRightButtonUp += Widget_MouseRightButtonUp;
+
+            //Actualiza el textbox de ancho objeto con el valor puesto por defecto
+            Ancho_Objeto.Text = Convert.ToString(l_lblitAux.widget.Width / 8);
+            Alto_Objeto.Text = Convert.ToString(l_lblitAux.widget.Height / 8);
+
+            int PosX = l_iX;
+            int PosY = l_iY;
+            if (l_strAlignment == "right")
+            {
+                PosX = l_iX + l_iWidth/2;
+            }
+            if (l_strAlignment == "center")
+            {
+                PosX = l_iX;
+            }
+            //Se posiciona el elemento en el canvas
+            Canvas.SetLeft(l_lblitAux.widget, PosX);
+            Canvas.SetTop(l_lblitAux.widget, PosY);
+            Canvas.SetZIndex(l_lblitAux.widget, 0);
+            //Se añade el elemento al canvas dependiendo del 'Tab' seleccionado
+            if (l_strName == "weight" || l_strName == "Weight" || l_strName == "WEIGHT")
+            {
+                l_lblitAux.weight_num = lbl_cnt_weight;
+                lbl_cnt_weight++;
+                l_lblitAux.labelSelec = "weight";
+                l_lblitAux.widget.Name = "box_weight_" + lbl_cnt_weight;
+                Text_tb.Text = tb.Text;
+                cnv1.Children.Add(l_lblitAux.widget);
+            }
+            else if (l_strName == "resume" || l_strName == "Resume" || l_strName == "RESUME")
+            {
+                l_lblitAux.resume_num = lbl_cnt_resume;
+                lbl_cnt_resume++;
+                l_lblitAux.labelSelec = "resume";
+                l_lblitAux.widget.Name = "box_resume_" + lbl_cnt_resume;
+                Text_tb.Text = tb.Text;
+                cnv2.Children.Add(l_lblitAux.widget);
+            }
+            l_lblitAux.widget.Children.Add(rect);//Se le añade al grid el rectángulo
+            l_lblitAux.widget.Children.Add(tb);//Se le añade al grid el textblock                
+            //Se le asigna un número a su variable que controla que número de elemento en
+            //la aplicacion en general
+            l_lblitAux.idCount = m_lstLabels.Count();
+            lbl_single_select = l_lblitAux.idCount;
+            m_lstLabels.Add(l_lblitAux);
+
+        }
+        private void Add_Sello_Reader(string l_strResource, string l_strAlignment, int l_iId, int l_iWidth, int l_iHeight, int l_iX, int l_iY, bool l_bCond, string l_strCondition, string l_strCondResource, string l_strcondValue, string l_strName)
+        {
+            ImageBrush myBrush = new ImageBrush();
+            myBrush.ImageSource = new BitmapImage(ResourceAccessor.Get("Resource/seal_background.png"));
+            label_item l_lblitAux = new label_item();//Crea la struct del objeto
+            l_lblitAux.widget = new Grid();//El widget principal es de tipo grid
+            TextBlock tb = new TextBlock();//Se crea el subtipo textblock para mostrarlo dentro del grid
+            Rectangle rect = new Rectangle();//Se crea un rectángulo para dibujar el borde
+            //Propiedades de los elementos
+            //Estas propiedades van cambiando dependiendo del tipo de elemento que hemos añadido,
+            //usando o no las propiedades que necesitamos
+            tb.Margin = new Thickness(5, 2, 2, 2);
+            l_lblitAux.widget.MinHeight = 10;
+            l_lblitAux.widget.MinWidth = 10;
+            rect.Fill = myBrush;
+            rect.StrokeThickness = 1;
+            rect.SnapsToDevicePixels = true;
+            rect.Stroke = Brushes.Black;
+            l_lblitAux.widget.Width = l_iWidth;
+            tb.Width = l_lblitAux.widget.Width;
+            l_lblitAux.widget.Height = l_iHeight;
+            tb.Height = l_lblitAux.widget.Height;
+            l_lblitAux.orientation = "horizontal";//Horizontal por defecto
+            l_lblitAux.type = types_items.seal;
+            l_lblitAux.id = l_iId;//Cuidado con el tema de los ids 
+            size_font_object.Text = Convert.ToString(l_lblitAux.font_size);
+            l_lblitAux.widget.Background = Brushes.Transparent;
+            l_lblitAux.widget.Focus();
+            l_lblitAux.align = l_strAlignment;
+            //Actualiza los datos de condición del TextBox
+            l_lblitAux.condition = l_strCondition;
+            l_lblitAux.cond_resource = l_strCondResource;
+            l_lblitAux.cond_value = l_strcondValue;
+            //Se crea el grupo de eventos a los que reaccionará
+            l_lblitAux.widget.MouseLeftButtonDown += Widget_MouseLeftButtonDown;
+            l_lblitAux.widget.MouseMove += Widget_MouseMove;
+            l_lblitAux.widget.MouseLeftButtonUp += Widget_MouseLeftButtonUp;
+            l_lblitAux.widget.MouseRightButtonDown += Widget_MouseRightButtonDown;
+            l_lblitAux.widget.MouseRightButtonUp += Widget_MouseRightButtonUp;
+
+            //Actualiza el textbox de ancho objeto con el valor puesto por defecto
+            Ancho_Objeto.Text = Convert.ToString(l_lblitAux.widget.Width / 8);
+            Alto_Objeto.Text = Convert.ToString(l_lblitAux.widget.Height / 8);
+
+            int PosX = l_iX;
+            int PosY = l_iY;
+            if (l_strAlignment == "right")
+            {
+                PosX = l_iX + l_iWidth / 2;
+            }
+            if (l_strAlignment == "center")
+            {
+                PosX = l_iX;
+            }
+            //Se posiciona el elemento en el canvas
+            Canvas.SetLeft(l_lblitAux.widget, PosX);
+            Canvas.SetTop(l_lblitAux.widget, PosY);
+            Canvas.SetZIndex(l_lblitAux.widget, 0);
+            //Se añade el elemento al canvas dependiendo del 'Tab' seleccionado
+            if (l_strName == "weight" || l_strName == "Weight" || l_strName == "WEIGHT")
+            {
+                l_lblitAux.weight_num = lbl_cnt_weight;
+                lbl_cnt_weight++;
+                l_lblitAux.labelSelec = "weight";
+                l_lblitAux.widget.Name = "box_weight_" + lbl_cnt_weight;
+                Text_tb.Text = tb.Text;
+                cnv1.Children.Add(l_lblitAux.widget);
+            }
+            else if (l_strName == "resume" || l_strName == "Resume" || l_strName == "RESUME")
+            {
+                l_lblitAux.resume_num = lbl_cnt_resume;
+                lbl_cnt_resume++;
+                l_lblitAux.labelSelec = "resume";
+                l_lblitAux.widget.Name = "box_resume_" + lbl_cnt_resume;
+                Text_tb.Text = tb.Text;
+                cnv2.Children.Add(l_lblitAux.widget);
+            }
+            l_lblitAux.widget.Children.Add(rect);//Se le añade al grid el rectángulo
+            l_lblitAux.widget.Children.Add(tb);//Se le añade al grid el textblock                
+            //Se le asigna un número a su variable que controla que número de elemento en
+            //la aplicacion en general
+            l_lblitAux.idCount = m_lstLabels.Count();
+            lbl_single_select = l_lblitAux.idCount;
+            m_lstLabels.Add(l_lblitAux);
+
+        }
+        private void Add_Barcode_Reader(string l_strResource, string l_strAlignment, int l_iId, int l_iWidth, int l_iHeight, int l_iX, int l_iY, bool l_bCond, string l_strCondition, string l_strCondResource, string l_strcondValue, string l_strName)
+        {
+            ImageBrush myBrush = new ImageBrush();
+            myBrush.ImageSource = new BitmapImage(ResourceAccessor.Get("Resource/barcode_background.png"));
+            label_item l_lblitAux = new label_item();//Crea la struct del objeto
+            l_lblitAux.widget = new Grid();//El widget principal es de tipo grid
+            TextBlock tb = new TextBlock();//Se crea el subtipo textblock para mostrarlo dentro del grid
+            Rectangle rect = new Rectangle();//Se crea un rectángulo para dibujar el borde
+            //Propiedades de los elementos
+            //Estas propiedades van cambiando dependiendo del tipo de elemento que hemos añadido,
+            //usando o no las propiedades que necesitamos
+            tb.Margin = new Thickness(5, 2, 2, 2);
+            l_lblitAux.widget.MinHeight = 10;
+            l_lblitAux.widget.MinWidth = 10;
+            rect.Fill = myBrush;
+            rect.StrokeThickness = 1;
+            rect.SnapsToDevicePixels = true;
+            rect.Stroke = Brushes.Black;
+            l_lblitAux.widget.Width = l_iWidth;
+            tb.Width = l_lblitAux.widget.Width;
+            l_lblitAux.widget.Height = l_iHeight;
+            tb.Height = l_lblitAux.widget.Height;
+            l_lblitAux.orientation = "horizontal";//Horizontal por defecto
+            l_lblitAux.type = types_items.barcode;
+            l_lblitAux.id = l_iId;//Cuidado con el tema de los ids 
+            size_font_object.Text = Convert.ToString(l_lblitAux.font_size);
+            l_lblitAux.widget.Background = Brushes.Transparent;
+            l_lblitAux.widget.Focus();
+            l_lblitAux.align = l_strAlignment;
+            //Actualiza los datos de condición del TextBox
+            l_lblitAux.condition = l_strCondition;
+            l_lblitAux.cond_resource = l_strCondResource;
+            l_lblitAux.cond_value = l_strcondValue;
+            //Se crea el grupo de eventos a los que reaccionará
+            l_lblitAux.widget.MouseLeftButtonDown += Widget_MouseLeftButtonDown;
+            l_lblitAux.widget.MouseMove += Widget_MouseMove;
+            l_lblitAux.widget.MouseLeftButtonUp += Widget_MouseLeftButtonUp;
+            l_lblitAux.widget.MouseRightButtonDown += Widget_MouseRightButtonDown;
+            l_lblitAux.widget.MouseRightButtonUp += Widget_MouseRightButtonUp;
+
+            //Actualiza el textbox de ancho objeto con el valor puesto por defecto
+            Ancho_Objeto.Text = Convert.ToString(l_lblitAux.widget.Width / 8);
+            Alto_Objeto.Text = Convert.ToString(l_lblitAux.widget.Height / 8);
+
+            int PosX = l_iX;
+            int PosY = l_iY;
+            if (l_strAlignment == "right")
+            {
+                PosX = l_iX + l_iWidth / 2;
+            }
+            if (l_strAlignment == "center")
+            {
+                PosX = l_iX;
+            }
+            //Se posiciona el elemento en el canvas
+            Canvas.SetLeft(l_lblitAux.widget, PosX);
+            Canvas.SetTop(l_lblitAux.widget, PosY);
+            Canvas.SetZIndex(l_lblitAux.widget, 0);
+            //Se añade el elemento al canvas dependiendo del 'Tab' seleccionado
+            if (l_strName == "weight" || l_strName == "Weight" || l_strName == "WEIGHT")
+            {
+                l_lblitAux.weight_num = lbl_cnt_weight;
+                lbl_cnt_weight++;
+                l_lblitAux.labelSelec = "weight";
+                l_lblitAux.widget.Name = "box_weight_" + lbl_cnt_weight;
+                Text_tb.Text = tb.Text;
+                cnv1.Children.Add(l_lblitAux.widget);
+            }
+            else if (l_strName == "resume" || l_strName == "Resume" || l_strName == "RESUME")
+            {
+                l_lblitAux.resume_num = lbl_cnt_resume;
+                lbl_cnt_resume++;
+                l_lblitAux.labelSelec = "resume";
+                l_lblitAux.widget.Name = "box_resume_" + lbl_cnt_resume;
+                Text_tb.Text = tb.Text;
+                cnv2.Children.Add(l_lblitAux.widget);
+            }
+            l_lblitAux.widget.Children.Add(rect);//Se le añade al grid el rectángulo
+            l_lblitAux.widget.Children.Add(tb);//Se le añade al grid el textblock                
+            //Se le asigna un número a su variable que controla que número de elemento en
+            //la aplicacion en general
+            l_lblitAux.idCount = m_lstLabels.Count();
+            lbl_single_select = l_lblitAux.idCount;
+            m_lstLabels.Add(l_lblitAux);
+
         }
         #endregion
         #region Eventos de Control de Objetos en Canvas //Eventos que ocurren dentro del canvas

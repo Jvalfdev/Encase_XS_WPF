@@ -448,9 +448,13 @@
                     </TabControl>
                 </Border>
             </StackPanel>
-        </ScrollViewer>        
-        <StackPanel Grid.Column="0" Grid.Row="1" Margin="10,10,10,10" Background="CadetBlue" >
+        </ScrollViewer>
+        <ScrollViewer Grid.Column="0" Grid.Row="1">
+            <StackPanel Grid.Column="0" Grid.Row="1" Margin="10,10,10,10" Background="CadetBlue" >
+
+
                 <TabControl Name="TbtMain" Background="CadetBlue" Height="1850" >
+
                     <TabItem Name="Tbt1" 
                              Width="70"
                              Height="20"
@@ -503,18 +507,20 @@
                             </StackPanel>
 
                             <StackPanel Margin="10" Name="Design_Frame1" Background="CadetBlue"  Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2">
-                                
-                                    <Canvas x:Name="cnv1"
+
+                                <Canvas x:Name="cnv1"
                                             MaxWidth="960"
                                             MaxHeight="960"
                                             ClipToBounds="true"
                                             MouseMove="cnv1_MouseMove">
 
-                                    </Canvas>
+                                </Canvas>
+
                             </StackPanel>
                         </Grid>
 
                     </TabItem>
+
                     <TabItem Name="Tbt2" 
                              Width="70"
                              Height="20"
@@ -564,7 +570,7 @@
 
 
                             </StackPanel>
-                            
+
 
                             <StackPanel Margin="10" Name="Design_Frame2" Background="CadetBlue"  Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2">
 
@@ -582,9 +588,14 @@
                     </TabItem>
 
 
+
                 </TabControl>
 
 
-            </StackPanel> 
+
+
+            </StackPanel>
+
+        </ScrollViewer>
     </Grid>
 </Window>

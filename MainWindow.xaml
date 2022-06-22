@@ -8,8 +8,8 @@
         xmlns:local="clr-namespace:Encase_XS_WPF"
         xmlns:rulerControl="clr-namespace:RulerControl.Wpf;assembly=RulerControl.Wpf"
         mc:Ignorable="d"
-        Title="MainWindow" Height="1024" Width="1280" HorizontalContentAlignment="Stretch"  VerticalContentAlignment="Stretch" WindowState="Maximized" 
-        KeyDown="Window_KeyDown" Closing="Window_Closing">
+        Title="Encase_XS" Height="1024" Width="1280" HorizontalContentAlignment="Stretch"  VerticalContentAlignment="Stretch" WindowState="Maximized" 
+        KeyDown="Window_KeyDown" Closing="Window_Closing" Icon="Resource/EditorEtiquetas.ico">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -26,20 +26,23 @@
                 <Setter Property="DockPanel.Dock" Value="Left"/>
                 <Setter Property="Width" Value="100"/>
             </Style>
+
         </ResourceDictionary>
 
-    </Window.Resources>      
+
+
+    </Window.Resources>
     <Grid Margin="0,0,0,7">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="5*"></ColumnDefinition>
-            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="1079*"></ColumnDefinition>
+            <ColumnDefinition Width="201*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="70" MinHeight="70"></RowDefinition>
-            <RowDefinition Height="494*" ></RowDefinition>
+            <RowDefinition Height="70" MinHeight="40"></RowDefinition>
+            <RowDefinition />
         </Grid.RowDefinitions>
-        <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Margin="2,2,2,2">
-            <DockPanel Height="40">
+        <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Margin="2,2,2,12">
+            <!--<DockPanel Height="40">
                 <Border >
                     <Menu DockPanel.Dock="Top" HorizontalAlignment="Left">
                         <MenuItem Header="_Archivo" FontSize="20">
@@ -64,31 +67,76 @@
                     </Menu>
 
                 </Border>
-            </DockPanel>
+            </DockPanel>-->
             <DockPanel Height="50">
                 <Border>
-                    <ToolBar Margin="0,-10,0,10">
-                        <Button Content="Nueva Etiqueta" Name="Nueva_Etiqueta" Click="Nueva_Etiqueta_Click"/>
-                        <Button Content="Abrir Etiqueta" Name="Abrir_Etiqueta" Click="Abrir_Etiqueta_Click"/>
-                        <Button Content="Guardar Etiqueta" Name="Guardar_Etiqueta" Click="Guardar_Etiqueta_Click"/>
+                    <ToolBar Margin="0,-10,0,-12">
+                        <Button  Name="Nueva_Etiqueta" Click="Nueva_Etiqueta_Click">
+                            <StackPanel>
+                                <Image Source="Resource/new-file.png" Height="27" Width="85"/>
+                                <TextBlock Text="Nueva Etiqueta"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Name="Abrir_Etiqueta" Click="Abrir_Etiqueta_Click">
+                            <StackPanel>
+                                <Image Source="Resource/open_file.png" Height="29" Width="73"/>
+                                <TextBlock Text="Abrir Etiqueta"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Name="Guardar_Etiqueta" Click="Guardar_Etiqueta_Click">
+                            <StackPanel>
+                                <Image Source="Resource/save.png" Height="31" Width="39" />
+                                <TextBlock Text="Guardar Etiqueta"/>
+                            </StackPanel>
+                        </Button>
                         <!--Botones relacionados con el diseño que en un fututo podrían implementarse-->
                         <!--<Separator/>
                         <Button Content="Añadir Diseño" Name="Add_Design" Click="Add_Design_Click"/>
                         <Button Content="Eliminar Diseño" Name="Delete_Design" Click="Delete_Design_Click" />-->
                         <Separator/>
-                        <Button Content="Añadir Texto" Name="Add_Texto" Click="Add_Texto_Click" />
-                        <Button Content="Añadir Campo" Name="Add_Campo" Click="Add_Campo_Click" />
-                        <Button Content="Añadir Cajeado" Name="Add_Cajeado" Click="Add_Cajeado_Click"/>
-                        <Button Content="Añadir Logo" Name ="Add_Imagen" Click="Add_Imagen_Click" />
-                        <Button Content="Añadir Sello" Name="Add_Sello" Click="Add_Sello_Click"/>
-                        <Button Content="Añadir Código de barras" Name="Add_Barcode" Click="Add_Barcode_Click"/>
+                        <Button Name="Add_Texto" Click="Add_Texto_Click">
+                            <StackPanel>
+                                <Image Source="Resource/add_inputtext.png"/>
+                                <TextBlock Text="Añadir Texto"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Name="Add_Campo" Click="Add_Campo_Click">
+                            <StackPanel>
+                                <Image Source="Resource/add_textlabel.png"/>
+                                <TextBlock Text="Añadir Campo"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Name="Add_Cajeado" Click="Add_Cajeado_Click">
+                            <StackPanel>
+                                <Image Source="Resource/inputtext.png"/>
+                                <TextBlock Text="Añadir Cajeado"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Name ="Add_Imagen" Click="Add_Imagen_Click">
+                            <StackPanel>
+                                <Image Source="Resource/logo_background.png"/>
+                                <TextBlock Text="Añadir Imagen"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Name="Add_Sello" Click="Add_Sello_Click">
+                            <StackPanel>
+                                <Image Source="Resource/add_sello.png"/>
+                                <TextBlock Text="Añadir Sello"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Name="Add_Barcode" Click="Add_Barcode_Click">
+                            <StackPanel>
+                                <Image Source="Resource/add_barcode.png"/>
+                                <TextBlock Text="Añadir Código de barras"/>
+                            </StackPanel>
+                        </Button>
                         <Separator/>
                     </ToolBar>
                 </Border>
             </DockPanel>
         </StackPanel>
-        <ScrollViewer Grid.RowSpan="2" Grid.Column="1" Grid.Row="1">
-            <StackPanel Grid.Column="1" Background="LightSlateGray" Margin="0,0,0,0" Grid.RowSpan="2">
+        <ScrollViewer Grid.Column="1" Grid.Row="1">
+            <StackPanel Grid.Column="1" Background="LightSlateGray" Margin="0,0,0,0" Grid.RowSpan="2" >
                 <Border  BorderThickness="1"  Grid.Column="1">
                     <TabControl TabStripPlacement="Top">
                         <TabItem Header="Objeto">
@@ -115,7 +163,7 @@
                                             <xctk:UIntegerUpDown Text="0" Name="Object_Y" ValueChanged="Object_Y_ValueChanged"/>
                                             <TextBlock Text="mm" FontSize="12"/>
                                         </StackPanel>
-                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
+                                        <!--<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
                                             <TextBlock Text="Ancho de línea" FontSize="12"/>
                                             <xctk:UIntegerUpDown Text="4"/>
                                         </StackPanel>
@@ -125,7 +173,7 @@
                                                 <ComboBoxItem IsSelected="True" Content="Horizontal" Name="LabelHorizontal" Selected="LabelHorizontal_Selected"/>
                                                 <ComboBoxItem Content="Vertical" Name="LabelVertical" Selected="LabelVertical_Selected"/>
                                             </ComboBox>
-                                        </StackPanel>
+                                        </StackPanel>-->
                                     </StackPanel>
                                 </GroupBox>
                                 <Separator DockPanel.Dock="Top"/>
@@ -141,24 +189,33 @@
                                             <RowDefinition/>
                                             <RowDefinition/>
                                         </Grid.RowDefinitions>
-                                        <Button Grid.Column="0" Grid.Row="0" Content="Izquierda-Arriba"
-                                                Name="Iz_Arr" Click="Iz_Arr_Click"/>
-                                        <Button Grid.Column="1" Grid.Row="0" Content="Centro-Arriba"
-                                                Name="cen_arr" Click="cen_arr_Click"/>
-                                        <Button Grid.Column="2" Grid.Row="0" Content="Derecha-Arriba"
-                                                Name="Der_Arr" Click="Der_Arr_Click"/>
-                                        <Button Grid.Column="0" Grid.Row="1" Content="Izquierda-Centro"
-                                                Name="izq_cen" Click="izq_cen_Click"/>
-                                        <Button Grid.Column="1" Grid.Row="1" Content="Centro-Centro"
-                                                Name="cen_cen" Click="cen_cen_Click"/>
-                                        <Button Grid.Column="2" Grid.Row="1" Content="Derecha-Centro"
-                                                Name="der_cen" Click="der_cen_Click"/>
-                                        <Button Grid.Column="0" Grid.Row="2" Content="Izquierda-Abajo"
-                                                Name="izq_ab" Click="izq_ab_Click"/>
-                                        <Button Grid.Column="1" Grid.Row="2" Content="Centro-Abajo"
-                                                Name="cen_ab" Click="cen_ab_Click"/>
-                                        <Button Grid.Column="2" Grid.Row="2" Content="Derecha-Abajo"
-                                                Name="der_ab" Click="der_ab_Click"/>
+                                        <Button Grid.Column="0" Grid.Row="0" Name="Iz_Arr" Click="Iz_Arr_Click" Background="Transparent" BorderThickness="0">
+                                            <Image Source="Resource/postopleft-arrow.png"/>
+                                        </Button>
+                                        <Button Grid.Column="1" Grid.Row="0" Name="cen_arr" Click="cen_arr_Click" Background="Transparent" BorderThickness="0">
+                                            <Image Source="Resource/postop-arrow.png"/>
+                                        </Button>
+                                        <Button Grid.Column="2" Grid.Row="0" Name="Der_Arr" Click="Der_Arr_Click" Background="Transparent" BorderThickness="0">
+                                            <Image Source="Resource/postopright-arrow.png"/>
+                                        </Button>
+                                        <Button Grid.Column="0" Grid.Row="1" Name="izq_cen" Click="izq_cen_Click" Background="Transparent" BorderThickness="0">
+                                            <Image Source="Resource/posleft-arrow.png"/>
+                                        </Button>
+                                        <Button Grid.Column="1" Grid.Row="1" Name="cen_cen" Click="cen_cen_Click" Background="Transparent" BorderThickness="0">
+                                            <TextBlock Text="0" FontSize="12"/>
+                                        </Button>
+                                        <Button Grid.Column="2" Grid.Row="1" Name="der_cen" Click="der_cen_Click" Background="Transparent" BorderThickness="0">
+                                            <Image Source="Resource/posright-arrow.png"/>
+                                        </Button>
+                                        <Button Grid.Column="0" Grid.Row="2" Name="izq_ab" Click="izq_ab_Click" Background="Transparent" BorderThickness="0">
+                                            <Image Source="Resource/posbottomleft-arrow.png"/>
+                                        </Button>
+                                        <Button Grid.Column="1" Grid.Row="2" Name="cen_ab" Click="cen_ab_Click" Background="Transparent" BorderThickness="0">
+                                            <Image Source="Resource/posbottom-arrow.png"/>
+                                        </Button>
+                                        <Button Grid.Column="2" Grid.Row="2" Name="der_ab" Click="der_ab_Click" Background="Transparent" BorderThickness="0">
+                                            <Image Source="Resource/posbottomright-arrow.png"/>
+                                        </Button>
                                     </Grid>
                                 </GroupBox>
                                 <Separator DockPanel.Dock="Top"/>
@@ -318,7 +375,7 @@
                                                 <ComboBoxItem Content="header.Text" 
                                                               Name="cond_header_text" Selected="cond_header_text_Selected"/>
                                             </ComboBox>
-                                            
+
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                             <ComboBox>
@@ -447,9 +504,11 @@
                         </TabItem>
                     </TabControl>
                 </Border>
+
             </StackPanel>
         </ScrollViewer>
-        <ScrollViewer Grid.Column="0" Grid.Row="1">
+
+        <ScrollViewer Grid.Column="0" Grid.Row="1"  ScrollViewer.HorizontalScrollBarVisibility="Auto" Margin="0,0,6,0">
             <StackPanel Grid.Column="0" Grid.Row="1" Margin="10,10,10,10" Background="CadetBlue" >
 
 
@@ -509,8 +568,8 @@
                             <StackPanel Margin="10" Name="Design_Frame1" Background="CadetBlue"  Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2">
 
                                 <Canvas x:Name="cnv1"
-                                            MaxWidth="960"
-                                            MaxHeight="960"
+                                            MaxWidth="2000"
+                                            MaxHeight="2000"
                                             ClipToBounds="true"
                                             MouseMove="cnv1_MouseMove">
 
@@ -576,8 +635,8 @@
 
 
                                 <Canvas x:Name="cnv2"
-                                    MaxWidth="960"
-                                    MaxHeight="960"
+                                    MaxWidth="2000"
+                                    MaxHeight="2000"
                                     ClipToBounds="true" MouseMove="cnv2_MouseMove">
 
                                 </Canvas>

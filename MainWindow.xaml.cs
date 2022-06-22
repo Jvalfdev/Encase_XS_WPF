@@ -86,7 +86,7 @@ namespace Encase_XS_WPF
         
         //Lista para guardar los objetos creados
         List<label_item> m_lstLabels = new List<label_item>();
-
+        
         #endregion
         #region OpenFile //Variables y declaraciones relacionadas con Abrir y guardar ficheros
         OpenFileDialog dlg = new OpenFileDialog();
@@ -165,9 +165,11 @@ namespace Encase_XS_WPF
             //Actualiza el valor de TextBox de Alto y ancho de documento
             
         }
-        public void Crear_Etiqueta_Reader(string m_nombre_Etiqueta, int m_ancho_Etiqueta, int m_alto_Etiqueta)
+        public void Crear_Etiqueta_Reader(string m_nombre_Etiqueta, int m_ancho_Etiqueta, int m_alto_Etiqueta, string l_strOrientation)
         {
-            
+            labelOrientation = "";
+            labelOrientation = l_strOrientation;
+            select_page_orientation(labelOrientation);
             //Da el tamaño al canvas introducido en la ventana de creación de etiqueta
             cnv1.Width = m_ancho_Etiqueta * 8;
             cnv2.Width = m_ancho_Etiqueta * 8;
@@ -203,7 +205,8 @@ namespace Encase_XS_WPF
             //Design_Frame2.Children.Add(cnv2);            
             //Centra el foco por defecto en el Tab1 "WEIGHT"
             Tbt1.Focus();
-            //Actualiza el valor de TextBox de Alto y ancho de documento
+            
+           
 
         }
 
@@ -226,14 +229,16 @@ namespace Encase_XS_WPF
         }
         private void Dlg_FileOk(object sender, CancelEventArgs e)
         {
-            
+
             //Limpia los datos de las etiquetas existentes
+            
             cnv1.Children.Clear();
             cnv2.Children.Clear();
             m_lstLabels.Clear();
             lbl_cnt_weight = 0;
             lbl_cnt_resume = 0;
 
+            bool unique_section_creation = false;
             string l_strLine;
             System.IO.StreamReader l_fsXML = new System.IO.StreamReader(dlg.OpenFile());
 
@@ -243,6 +248,7 @@ namespace Encase_XS_WPF
             string l_strCondition = "", l_strCondResource = "", l_strcondValue = "";
             bool l_bCond = false;
             string l_strName_gen = "";
+            string l_strOrientation_gen = "";
 
             while (!l_fsXML.EndOfStream)
             {
@@ -265,9 +271,10 @@ namespace Encase_XS_WPF
                 if (l_strTypeLine == "report")
                 {
                     int l_iWidth = 0, l_iHeight = 0;
-                    string l_strOrientation = "Portrait";
+                    string l_strOrientation = "";
                     string l_strName = "";
                     l_strName_gen = "";
+                    l_strOrientation_gen = "";
 
                     while ((l_iEnd < l_iEndItem))
                     {
@@ -316,10 +323,11 @@ namespace Encase_XS_WPF
                         labelOrientation = "portrait";
                     else if ((l_strOrientation == "landscape") || (l_strOrientation == "Landscape") || (l_strOrientation == "LANDSCAPE"))
                         labelOrientation = "landscape";
-
+                    l_strOrientation_gen = l_strOrientation;
                     Nombre_Tipo_Documento.Text = l_strName;
                     Document_Width.Text = Convert.ToString(l_iWidth);
                     Document_Height.Text = Convert.ToString(l_iHeight);
+
                 }
                 else if (l_strTypeLine == "if")
                 {
@@ -380,8 +388,13 @@ namespace Encase_XS_WPF
                         else if (l_strField == "width")
                         {
                             l_iWidth = Convert.ToInt32(l_strValue);
-                            if (l_iWidth > 448)
-                                l_iWidth = 448;
+                            if (l_strOrientation_gen == "portrait")
+                            {
+                                
+                                if (l_iWidth > 448)
+                                    l_iWidth = 448;
+                            }
+                            
                         }
                         else if (l_strField == "height")
                         {
@@ -396,8 +409,11 @@ namespace Encase_XS_WPF
                             l_iY = Convert.ToInt32(l_strValue);
                         }
                     }
-                    Crear_Etiqueta_Reader(dlg.FileName, l_iWidth/8, l_iHeight/8);
-
+                    if (unique_section_creation == false)
+                    {
+                        Crear_Etiqueta_Reader(dlg.FileName, l_iWidth / 8, l_iHeight / 8, l_strOrientation_gen);
+                        unique_section_creation = true;
+                    }
                     //l_iWidth, l_iHeight, l_iX, l_iY, l_strName, l_bCond, l_strCondition, l_strCondResource, l_strcondValue
                     l_bCond = false;
                     l_strCondition = "";
@@ -558,18 +574,18 @@ namespace Encase_XS_WPF
             
             m_lstLabels.Sort((x, y) => x.type.CompareTo(y.type));
             string l_strAuxOrientation = "";
-            switch (labelOrientation) //Switch para elegir orientación de documento
-            {
-                case "vertical":
-                    l_strAuxOrientation = "portrait";
-                    break;
-                case "horizontal":
-                    l_strAuxOrientation = "landscape";
-                    break;
-            }
+            //switch (labelOrientation) //Switch para elegir orientación de documento
+            //{
+            //    case "vertical":
+            //        l_strAuxOrientation = "portrait";
+            //        break;
+            //    case "horizontal":
+            //        l_strAuxOrientation = "landscape";
+            //        break;
+            //}
             //Comienzo a escribir cada linea del xml
             l_fsXML.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-            l_fsXML.WriteLine("<report page_orientation=\"" + l_strAuxOrientation + "\" page_width=\"" + Convert.ToString(Decimal.Truncate((decimal)cnv1.Width / 8)) + "\" page_height=\"" + Convert.ToString(Decimal.Truncate((decimal)cnv1.Height / 8)) + "\" type=\"label\" name=\"" + m_nombre_Etiqueta + "\" page=\"Custom\" width=\"" + Convert.ToString(Decimal.Truncate((decimal)(cnv1.Width))) + "\" height=\"" + Convert.ToString(Decimal.Truncate((decimal)(cnv1.Height))) + "\" left_margin=\"0\" version=\"1\" units=\"pixels\" auto_offset=\"1\">");
+            l_fsXML.WriteLine("<report page_orientation=\"" + labelOrientation + "\" page_width=\"" + Convert.ToString(Decimal.Truncate((decimal)cnv1.Width / 8)) + "\" page_height=\"" + Convert.ToString(Decimal.Truncate((decimal)cnv1.Height / 8)) + "\" type=\"label\" name=\"" + m_nombre_Etiqueta + "\" page=\"Custom\" width=\"" + Convert.ToString(Decimal.Truncate((decimal)(cnv1.Width))) + "\" height=\"" + Convert.ToString(Decimal.Truncate((decimal)(cnv1.Height))) + "\" left_margin=\"0\" version=\"1\" units=\"pixels\" auto_offset=\"1\">");
             if (lbl_cnt_weight > 0)
             {
                 l_fsXML.WriteLine("\t<if condition=\"equal\" resource1=\"header.LabelType\" value2=\"WEIGHT\">");
@@ -1159,6 +1175,7 @@ namespace Encase_XS_WPF
                 l_lblitAux.is_selected = true;
                 l_lblitAux.condition = "none";
                 select_condition_object(l_lblitAux.condition);
+                select_border_thin(1);
 
                 l_lblitAux.widget.MouseLeftButtonDown += Widget_MouseLeftButtonDown;
                 l_lblitAux.widget.MouseMove += Widget_MouseMove;
@@ -1191,6 +1208,7 @@ namespace Encase_XS_WPF
                 l_lblitAux.widget.Children.Add(tb);
 
                 l_lblitAux.idCount = m_lstLabels.Count();
+                lbl_single_select = l_lblitAux.idCount;
                 m_lstLabels.Add(l_lblitAux);
 
                 //Mostrar/Ocultar cosas necesarias o innecesarias del menú izquierdo           
@@ -1280,6 +1298,7 @@ namespace Encase_XS_WPF
                 //Se le asigna un número a su variable que controla que número de elemento es en
                 //la aplicacion en general
                 l_lblitAux.idCount = m_lstLabels.Count();
+                lbl_single_select = l_lblitAux.idCount;
                 m_lstLabels.Add(l_lblitAux);
                 //Mostrar/Ocultar cosas necesarias o innecesarias del menú izquierdo
                 sel_prop_text.IsEnabled = false;
@@ -1371,6 +1390,7 @@ namespace Encase_XS_WPF
                 //Se le asigna un número a su variable que controla que número de elemento es en
                 //la aplicacion en general
                 l_lblitAux.idCount = m_lstLabels.Count();
+                lbl_single_select = l_lblitAux.idCount;
                 m_lstLabels.Add(l_lblitAux);
                 //Mostrar/Ocultar cosas necesarias o innecesarias del menú izquierdo
                 sel_prop_text.IsEnabled = false;
@@ -1461,6 +1481,7 @@ namespace Encase_XS_WPF
                 //Se le asigna un número a su variable que controla que número de elemento es en
                 //la aplicacion en general
                 l_lblitAux.idCount = m_lstLabels.Count();
+                lbl_single_select = l_lblitAux.idCount;
                 m_lstLabels.Add(l_lblitAux);
                 //Mostrar/Ocultar cosas necesarias o innecesarias del menú izquierdo
                 sel_prop_text.IsEnabled = false;
@@ -2240,6 +2261,7 @@ namespace Encase_XS_WPF
                             select_alignment_object(l_lbl.align);
                             id_update_toolbar(l_lbl.id);
                             select_barcode_type(l_lbl.barcode_type);
+                            select_border_thin(Convert.ToInt32(l_lbl.widget.Children.OfType<Rectangle>().First().StrokeThickness));
 
                             Ancho_Objeto.Text = Convert.ToString(widthInt / 8);
                             Alto_Objeto.Text = Convert.ToString(heighInt / 8);
@@ -2312,11 +2334,11 @@ namespace Encase_XS_WPF
         }
         private void LabelHorizontal_Selected(object sender, RoutedEventArgs e)
         {
-            labelOrientation = "Horizontal";
+            
         }
         private void LabelVertical_Selected(object sender, RoutedEventArgs e)
         {
-            labelOrientation = "Vertical";
+            
         }
         private void Text_tb_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -2333,11 +2355,11 @@ namespace Encase_XS_WPF
         }
         private void document_Horizontal_Selected(object sender, RoutedEventArgs e)
         {
-            labelOrientation = "horizontal";
+            labelOrientation = "landscape";
         }
         private void document_Vertical_Selected(object sender, RoutedEventArgs e)
         {
-            labelOrientation = "vertical";
+            labelOrientation = "portrait";
         }
         private void Document_Width_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
@@ -3748,7 +3770,7 @@ namespace Encase_XS_WPF
         {
             id_type.Text = Convert.ToString(id);
         }
-        public void select_barcode_type (string p_barcode_type)
+        public void select_barcode_type (string p_barcode_type)//Función para seleccionar el código de barras en el menú de la derecha
         {
             if (p_barcode_type == "ean8")
             {
@@ -3771,6 +3793,40 @@ namespace Encase_XS_WPF
                 barcode_code128.IsSelected = true;
             }
         }
-        #endregion        
+        public void select_page_orientation(string labelOrientation)//Función para seleccionar la orientación de'página en el menú de la derecha
+        {
+            if (labelOrientation == "portrait")
+            {
+                document_Vertical.IsSelected = true;
+            }
+            else if (labelOrientation == "landscape")
+            {
+                document_Horizontal.IsSelected = true;
+            }
+        }
+        public void select_border_thin (int thinkness)
+        {
+            switch (thinkness)
+            {
+                case 1:
+                    border_thin_1.IsSelected = true;
+                    break;
+                case 2:
+                    border_thin_2.IsSelected = true;
+                    break;
+                case 3:
+                    border_thin_3.IsSelected = true;
+                    break;
+                case 4:
+                    border_thin_4.IsSelected = true;
+                    break;
+                case 5:
+                    border_thin_5.IsSelected = true;
+                    break;
+            }
+
+
+        }
+        #endregion     
     }
 }

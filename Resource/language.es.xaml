@@ -1,0 +1,52 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+    <system:String x:Key="cerrar">Cerrar</system:String>
+    <system:String x:Key="cancelar">Cancelar</system:String>
+    <system:String x:Key="aceptar">Aceptar</system:String>
+    <system:String x:Key="guardar">Guardar</system:String>
+    <system:String x:Key="Abrir">Abrir</system:String>
+    <system:String x:Key="nueva_etiqueta">Nueva Etiqueta</system:String>
+    <system:String x:Key="abrir_etiqueta">Abrir Etiqueta</system:String>
+    <system:String x:Key="guardar_etiqueta">Guardar Etiqueta</system:String>
+    <system:String x:Key="añadir_texto">Añadir Texto</system:String>
+    <system:String x:Key="añadir_imagen">Añadir Imagen</system:String>
+    <system:String x:Key="añadir_campo">Añadir Campo</system:String>
+    <system:String x:Key="añadir_cajeado">Añadir Cajeado</system:String>
+    <system:String x:Key="añadir_sello">Añadir Sello</system:String>
+    <system:String x:Key="añadir_codigo">Añadir Código de Barras</system:String>
+    <system:String x:Key="objeto">Objeto</system:String>
+    <system:String x:Key="geometria">Geometría</system:String>
+    <system:String x:Key="posicion">Posición</system:String>
+    <system:String x:Key="alineacion">Alineación</system:String>
+    <system:String x:Key="estilo">Estilo</system:String>
+    <system:String x:Key="propiedades">Propiedades</system:String>
+    <system:String x:Key="condicion">Condición</system:String>
+    <system:String x:Key="ancho">Ancho</system:String>
+    <system:String x:Key="alto">Alto</system:String>
+    <system:String x:Key="izquierda">Izquierda</system:String>
+    <system:String x:Key="derecha">Derecha</system:String>
+    <system:String x:Key="centro">Centro</system:String>
+    <system:String x:Key="fuente">Fuente</system:String>
+    <system:String x:Key="tamaño">Tamaño</system:String>
+    <system:String x:Key="negrita">Negrita</system:String>
+    <system:String x:Key="cursiva">Cursiva</system:String>
+    <system:String x:Key="grosor_cajeado">Grosor de Línea</system:String>
+    <system:String x:Key="campo">Campo</system:String>
+    <system:String x:Key="codigo_barras">Código de Barras</system:String>
+    <system:String x:Key="ninguna">Ninguna</system:String>
+    <system:String x:Key="igual">Igual</system:String>
+    <system:String x:Key="distinto">Distinto</system:String>
+    <system:String x:Key="valor">Valor</system:String>
+    <system:String x:Key="nombre">Nombre</system:String>
+    <system:String x:Key="documento">Documento</system:String>
+    <system:String x:Key="orientacion">Orientación</system:String>
+    <system:String x:Key="horizontal">Horizontal</system:String>
+    <system:String x:Key="vertical">Vertical</system:String>
+    <system:String x:Key="quieres_cerrar">Quieres cerrar la aplicación?</system:String>
+    <system:String x:Key="quieres_guardar">Quieres guardar el documento?</system:String>
+    <system:String x:Key="lenguaje">Idioma</system:String>
+
+
+
+</ResourceDictionary>

@@ -24,6 +24,7 @@ using System.IO;
 
 using System.ComponentModel;
 using System.Reflection;
+using System.Threading;
 
 enum types_items { none = 0, lbl, field, logo, box, barcode, seal};
 namespace Encase_XS_WPF
@@ -114,6 +115,81 @@ namespace Encase_XS_WPF
         public MainWindow()
         {            
             InitializeComponent();
+            this.SetLanguageDictionary();
+            
+        }
+        #endregion
+        #region Funciónes selectoras del idioma 
+        private void SetLanguageDictionaryManual(string language)
+        {
+            ResourceDictionary dict = new ResourceDictionary();
+            
+            switch (language)
+            {
+                case "es":
+                    dict.Source = new Uri("..\\Resource\\language.es.xaml", UriKind.Relative);
+                    break;
+                case "en":
+                    dict.Source = new Uri("..\\Resource\\language.en.xaml", UriKind.Relative);
+                    break;
+                case "de":
+                    dict.Source = new Uri("..\\Resource\\language.de.xaml", UriKind.Relative);
+                    break;
+                case "it":
+                    dict.Source = new Uri("..\\Resource\\language.it.xaml", UriKind.Relative);
+                    break;
+                case "fr":
+                    dict.Source = new Uri("..\\Resource\\language.fr.xaml", UriKind.Relative);
+                    break;
+                default:
+                    dict.Source = new Uri("..\\Resource\\language.en.xaml", UriKind.Relative);
+                    break;
+            }
+            this.Resources.MergedDictionaries.Add(dict);
+        }
+        private void SetLanguageDictionary()
+        {
+            ResourceDictionary dict = new ResourceDictionary();
+            switch (Thread.CurrentThread.CurrentCulture.ToString())
+            {
+                case "es":
+                    dict.Source = new Uri("..\\Resource\\language.es.xaml", UriKind.Relative);
+                    break;
+                case "es-ES":
+                    dict.Source = new Uri("..\\Resource\\language.es.xaml", UriKind.Relative);
+                    break;
+                case "eu-ES":
+                    dict.Source = new Uri("..\\Resource\\language.es.xaml", UriKind.Relative);
+                    break;
+                case "fr-FR":
+                    dict.Source = new Uri("..\\Resource\\language.fr.xaml", UriKind.Relative);
+                    break;
+                case "de-DE":
+                    dict.Source = new Uri("..\\Resource\\language.de.xaml", UriKind.Relative);
+                    break;
+                case "el-GR":
+                    dict.Source = new Uri("..\\Resource\\language.en.xaml", UriKind.Relative);
+                    break;
+                case "it-IT":
+                    dict.Source = new Uri("..\\Resource\\language.it.xaml", UriKind.Relative);
+                    break;
+                case "en":
+                    dict.Source = new Uri("..\\Resource\\language.en.xaml", UriKind.Relative);
+                    break;
+                case "en-US":
+                    dict.Source = new Uri("..\\Resource\\language.en.xaml", UriKind.Relative);
+                    break;
+                case "en-GB":
+                    dict.Source = new Uri("..\\Resource\\language.en.xaml", UriKind.Relative);
+                    break;
+                case "pt-PT":
+                    dict.Source = new Uri("..\\Resource\\language.en.xaml", UriKind.Relative);
+                    break;
+                default:
+                    dict.Source = new Uri("..\\Resource\\language.en.xaml", UriKind.Relative);
+                    break;
+            }
+            this.Resources.MergedDictionaries.Add(dict);
         }
         #endregion
         #region Crea etiqueta //Crea una etiqueta con los datos pasados en ventana de nueva etiqueta
@@ -3485,9 +3561,10 @@ namespace Encase_XS_WPF
         }
         private void Window_Closing(object sender, CancelEventArgs e)
         {
-            if (MessageBox.Show("Quieres cerrar el programa?", "Cerrar", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            
+            if (MessageBox.Show(quieres_cerrar.Text, cerrar.Text, MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                if (MessageBox.Show("Quieres guardar los cambios?", "Guardar", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                if (MessageBox.Show(quieres_guardar.Text, guardar.Text, MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 {
                     dlg_save.DefaultExt = ".xml";
                     dlg_save.Filter = "XML Files (*.xml)|*.xml";
@@ -3827,6 +3904,32 @@ namespace Encase_XS_WPF
 
 
         }
-        #endregion     
+        #endregion
+
+        private void español_Selected(object sender, RoutedEventArgs e)
+        {
+            SetLanguageDictionaryManual("es");
+            
+        }
+
+        private void ingles_Selected(object sender, RoutedEventArgs e)
+        {
+            SetLanguageDictionaryManual("en");
+        }
+
+        private void italiano_Selected(object sender, RoutedEventArgs e)
+        {
+            SetLanguageDictionaryManual("it");
+        }
+
+        private void frances_Selected(object sender, RoutedEventArgs e)
+        {
+            SetLanguageDictionaryManual("fr");
+        }
+
+        private void aleman_Selected(object sender, RoutedEventArgs e)
+        {
+            SetLanguageDictionaryManual("de");
+        }
     }
 }

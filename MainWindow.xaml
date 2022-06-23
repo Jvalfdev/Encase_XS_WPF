@@ -70,25 +70,29 @@
             </DockPanel>-->
             <DockPanel Height="50">
                 <Border>
-                    <ToolBar Margin="0,-10,0,-12">
+                    <ToolBar Margin="0,-10,0,-12" VerticalContentAlignment="Bottom" HorizontalContentAlignment="Center">
                         <Button  Name="Nueva_Etiqueta" Click="Nueva_Etiqueta_Click">
                             <StackPanel>
                                 <Image Source="Resource/new-file.png" Height="27" Width="85"/>
-                                <TextBlock Text="Nueva Etiqueta"/>
+                                <TextBlock Text="{DynamicResource nueva_etiqueta}"/>
                             </StackPanel>
                         </Button>
                         <Button Name="Abrir_Etiqueta" Click="Abrir_Etiqueta_Click">
                             <StackPanel>
                                 <Image Source="Resource/open_file.png" Height="29" Width="73"/>
-                                <TextBlock Text="Abrir Etiqueta"/>
+                                <TextBlock Text="{DynamicResource abrir_etiqueta}"/>
                             </StackPanel>
                         </Button>
                         <Button Name="Guardar_Etiqueta" Click="Guardar_Etiqueta_Click">
                             <StackPanel>
                                 <Image Source="Resource/save.png" Height="31" Width="39" />
-                                <TextBlock Text="Guardar Etiqueta"/>
+                                <TextBlock Text="{DynamicResource guardar_etiqueta}"/>
                             </StackPanel>
                         </Button>
+                        <TextBlock Text="{DynamicResource quieres_cerrar}" Name="quieres_cerrar" Visibility="Hidden" Width="0"/>
+                        <TextBlock Text="{DynamicResource cerrar}" Name="cerrar" Visibility="Hidden" Width="0"/>
+                        <TextBlock Text="{DynamicResource quieres_guardar}" Name="quieres_guardar" Visibility="Hidden" Width="0"/>
+                        <TextBlock Text="{DynamicResource guardar}" Name="guardar" Visibility="Hidden" Width="0"/>
                         <!--Botones relacionados con el diseño que en un fututo podrían implementarse-->
                         <!--<Separator/>
                         <Button Content="Añadir Diseño" Name="Add_Design" Click="Add_Design_Click"/>
@@ -97,40 +101,41 @@
                         <Button Name="Add_Texto" Click="Add_Texto_Click">
                             <StackPanel>
                                 <Image Source="Resource/add_inputtext.png"/>
-                                <TextBlock Text="Añadir Texto"/>
+                                <TextBlock Text="{DynamicResource añadir_texto}"/>
                             </StackPanel>
                         </Button>
                         <Button Name="Add_Campo" Click="Add_Campo_Click">
                             <StackPanel>
                                 <Image Source="Resource/add_textlabel.png"/>
-                                <TextBlock Text="Añadir Campo"/>
+                                <TextBlock Text="{DynamicResource añadir_campo}"/>
                             </StackPanel>
                         </Button>
                         <Button Name="Add_Cajeado" Click="Add_Cajeado_Click">
                             <StackPanel>
                                 <Image Source="Resource/inputtext.png"/>
-                                <TextBlock Text="Añadir Cajeado"/>
+                                <TextBlock Text="{DynamicResource añadir_cajeado}"/>
                             </StackPanel>
                         </Button>
                         <Button Name ="Add_Imagen" Click="Add_Imagen_Click">
                             <StackPanel>
                                 <Image Source="Resource/logo_background.png"/>
-                                <TextBlock Text="Añadir Imagen"/>
+                                <TextBlock Text="{DynamicResource añadir_imagen}" HorizontalAlignment="Center"/>
                             </StackPanel>
                         </Button>
                         <Button Name="Add_Sello" Click="Add_Sello_Click">
                             <StackPanel>
                                 <Image Source="Resource/add_sello.png"/>
-                                <TextBlock Text="Añadir Sello"/>
+                                <TextBlock Text="{DynamicResource añadir_sello}"/>
                             </StackPanel>
                         </Button>
                         <Button Name="Add_Barcode" Click="Add_Barcode_Click">
                             <StackPanel>
                                 <Image Source="Resource/add_barcode.png"/>
-                                <TextBlock Text="Añadir Código de barras"/>
+                                <TextBlock Text="{DynamicResource añadir_codigo}"/>
                             </StackPanel>
                         </Button>
                         <Separator/>
+                        
                     </ToolBar>
                 </Border>
             </DockPanel>
@@ -139,17 +144,17 @@
             <StackPanel Grid.Column="1" Background="LightSlateGray" Margin="0,0,0,0" Grid.RowSpan="2" >
                 <Border  BorderThickness="1"  Grid.Column="1">
                     <TabControl TabStripPlacement="Top">
-                        <TabItem Header="Objeto">
+                        <TabItem Header="{DynamicResource objeto}">
                             <DockPanel>
-                                <GroupBox Header="Geometría" DockPanel.Dock="Top">
+                                <GroupBox Header="{DynamicResource geometria}" DockPanel.Dock="Top">
                                     <StackPanel Orientation="Vertical">
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
-                                            <TextBlock Text="Ancho: " FontSize="12"/>
+                                            <TextBlock Text="{DynamicResource ancho}" FontSize="12"/>
                                             <xctk:UIntegerUpDown Text="0" Name="Ancho_Objeto" ValueChanged="Ancho_Objeto_ValueChanged"/>
                                             <TextBlock Text="mm" FontSize="12"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
-                                            <TextBlock Text="Alto: " FontSize="12"/>
+                                            <TextBlock Text="{DynamicResource alto}" FontSize="12"/>
                                             <xctk:UIntegerUpDown Text="0" Name="Alto_Objeto" ValueChanged="Alto_Objeto_ValueChanged"/>
                                             <TextBlock Text="mm" FontSize="12"/>
                                         </StackPanel>
@@ -177,7 +182,7 @@
                                     </StackPanel>
                                 </GroupBox>
                                 <Separator DockPanel.Dock="Top"/>
-                                <GroupBox Header="Posición" DockPanel.Dock="Top">
+                                <GroupBox Header="{DynamicResource posicion}" DockPanel.Dock="Top">
                                     <Grid Height="100">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition/>
@@ -219,18 +224,18 @@
                                     </Grid>
                                 </GroupBox>
                                 <Separator DockPanel.Dock="Top"/>
-                                <GroupBox Header="Alineación" DockPanel.Dock="Top" Name="alignment_toolbar"  IsEnabled="False">
+                                <GroupBox Header="{DynamicResource alineacion}" DockPanel.Dock="Top" Name="alignment_toolbar"  IsEnabled="False">
                                     <StackPanel Orientation="Horizontal">
-                                        <CheckBox Content="Izquierda" Name="align_con_iz" Checked="align_con_iz_Checked"/>
-                                        <CheckBox Content="Centro" Name="align_con_cen" Checked="align_con_cen_Checked"/>
-                                        <CheckBox Content="Derecha" Name="align_con_der" Checked="align_con_der_Checked"/>
+                                        <CheckBox Content="{DynamicResource izquierda}" Name="align_con_iz" Checked="align_con_iz_Checked"/>
+                                        <CheckBox Content="{DynamicResource centro}" Name="align_con_cen" Checked="align_con_cen_Checked"/>
+                                        <CheckBox Content="{DynamicResource derecha}" Name="align_con_der" Checked="align_con_der_Checked"/>
                                     </StackPanel>
                                 </GroupBox>
                                 <Separator DockPanel.Dock="Top"/>
-                                <GroupBox Header="Estilo" DockPanel.Dock="Top">
+                                <GroupBox Header="{DynamicResource estilo}" DockPanel.Dock="Top">
                                     <StackPanel Orientation="Vertical">
                                         <StackPanel Orientation="Horizontal" Name="sel_font_type" HorizontalAlignment="Center" Margin="5">
-                                            <TextBlock Text="Fuente" FontSize="12"/>
+                                            <TextBlock Text="{DynamicResource fuente}" FontSize="12"/>
                                             <ComboBox >
                                                 <ComboBoxItem IsSelected="True" Content="Arial"
                                                               Name="font_arial_sel" Selected="font_arial_sel_Selected"/>
@@ -243,15 +248,15 @@
                                             </ComboBox>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Name="sel_font_size" HorizontalAlignment="Center" Margin="5">
-                                            <TextBlock Text="Tamaño" FontSize="12" />
+                                            <TextBlock Text="{DynamicResource tamaño}" FontSize="12" />
                                             <xctk:IntegerUpDown Name="size_font_object" ValueChanged="size_font_object_ValueChanged"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Name="sel_neg_curs" Margin="5" HorizontalAlignment="Center">
-                                            <CheckBox Content="Negrita" Name="sel_negrita" Checked="sel_negrita_Checked" Unchecked="sel_negrita_Unchecked"></CheckBox>
-                                            <CheckBox Content="Cursiva" Name="sel_cursiva" Checked="sel_cursiva_Checked" Unchecked="sel_cursiva_Unchecked"></CheckBox>
+                                            <CheckBox Content="{DynamicResource negrita}" Name="sel_negrita" Checked="sel_negrita_Checked" Unchecked="sel_negrita_Unchecked"></CheckBox>
+                                            <CheckBox Content="{DynamicResource cursiva}" Name="cursiva" Checked="sel_cursiva_Checked" Unchecked="sel_cursiva_Unchecked"></CheckBox>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Name="border_thin_selector" HorizontalAlignment="Center" Margin="5" >
-                                            <TextBlock Text="Grosor de cajeado: "/>
+                                            <TextBlock Text="{DynamicResource grosor_cajeado}"/>
                                             <ComboBox >
                                                 <ComboBoxItem IsSelected="True" Content="1" Name="border_thin_1" Selected="border_thin_1_Selected"/>
                                                 <ComboBoxItem Content="2" Name="border_thin_2" Selected="border_thin_2_Selected"/>
@@ -263,7 +268,7 @@
                                     </StackPanel>
                                 </GroupBox>
                                 <Separator DockPanel.Dock="Top"/>
-                                <GroupBox Header="Propiedades" DockPanel.Dock="Top">
+                                <GroupBox Header="{DynamicResource propiedades}" DockPanel.Dock="Top">
                                     <StackPanel Orientation="Vertical">
                                         <StackPanel Name="sel_prop_text" IsEnabled="False"
                                                     Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
@@ -278,7 +283,7 @@
                                         </StackPanel>
                                         <StackPanel Name="sel_prop_campo" IsEnabled="False"
                                                     Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
-                                            <TextBlock Text="Campo" FontSize="12"/>
+                                            <TextBlock Text="{DynamicResource campo}" FontSize="12"/>
                                             <ComboBox>
                                                 <ComboBoxItem Content="line.SaleForm" Name="sel_line_saleform" Selected="sel_line_saleform_Selected"/>
                                                 <ComboBoxItem Content="line.ItemName" Name="sel_line_itemname" Selected="sel_line_itemname_Selected"/>
@@ -315,7 +320,7 @@
                                         </StackPanel>-->
                                         <StackPanel Name="sel_prop_barcode" IsEnabled="False"
                                                     Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
-                                            <TextBlock Text="Código de barras" FontSize="12"/>
+                                            <TextBlock Text="{DynamicResource codigo_barras}" FontSize="12"/>
                                             <ComboBox>
                                                 <ComboBoxItem Content="EAN-8" Name="barcode_ean8" Selected="barcode_ean8_Selected" />
                                                 <ComboBoxItem Content="EAN-13" Name="barcode_ean13" Selected="barcode_ean13_Selected"  IsSelected="True"/>
@@ -327,7 +332,7 @@
                                     </StackPanel>
                                 </GroupBox>
                                 <Separator DockPanel.Dock="Top"/>
-                                <GroupBox Header="Condición" Name="condition_toolbar" IsEnabled="False">
+                                <GroupBox Header="{DynamicResource condicion}" Name="condition_toolbar" IsEnabled="False">
                                     <StackPanel Orientation="Vertical">
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                             <TextBlock Text="Campo: "></TextBlock>
@@ -379,13 +384,13 @@
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                             <ComboBox>
-                                                <ComboBoxItem Content="Ninguna" IsSelected="True" Name="cond_none" Selected="cond_none_Selected"/>
-                                                <ComboBoxItem Content="Igual" Name="cond_same" Selected="cond_same_Selected"/>
-                                                <ComboBoxItem Content="Distinto" Name="cond_dist" Selected="cond_dist_Selected"/>
+                                                <ComboBoxItem Content="{DynamicResource ninguna}" IsSelected="True" Name="cond_none" Selected="cond_none_Selected"/>
+                                                <ComboBoxItem Content="{DynamicResource igual}" Name="cond_same" Selected="cond_same_Selected"/>
+                                                <ComboBoxItem Content="{DynamicResource distinto}" Name="cond_dist" Selected="cond_dist_Selected"/>
                                             </ComboBox>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                            <TextBlock Text="Valor: "/>
+                                            <TextBlock Text="{DynamicResource valor}"/>
                                             <TextBox Width="80" Name="cond_value" TextChanged="cond_value_TextChanged"/>
                                         </StackPanel>
                                     </StackPanel>
@@ -466,35 +471,35 @@
                                 </GroupBox>
                             </DockPanel>
                         </TabItem>-->
-                        <TabItem Header="Documento">
+                        <TabItem Header="{DynamicResource documento}">
                             <DockPanel>
                                 <GroupBox DockPanel.Dock="Top">
                                     <StackPanel Orientation="Vertical">
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
-                                            <TextBlock Text="Nombre: " FontSize="12"/>
+                                            <TextBlock Text="{DynamicResource nombre}" FontSize="12"/>
                                             <TextBox Name="Nombre_Tipo_Documento" Width="100"/>
                                         </StackPanel>
                                     </StackPanel>
                                 </GroupBox>
                                 <Separator DockPanel.Dock="Top"/>
-                                <GroupBox Header="Geometría" DockPanel.Dock="Top">
+                                <GroupBox Header="{DynamicResource geometria}" DockPanel.Dock="Top">
                                     <StackPanel Orientation="Vertical">
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
-                                            <TextBlock Text="Ancho: " FontSize="12"/>
+                                            <TextBlock Text="{DynamicResource ancho}" FontSize="12"/>
                                             <xctk:UIntegerUpDown Text="0" Name="Document_Width" ValueChanged="Document_Width_ValueChanged"/>
                                             <TextBlock Text="mm" FontSize="12"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
-                                            <TextBlock Text="Alto: " FontSize="12"/>
+                                            <TextBlock Text="{DynamicResource alto}" FontSize="12"/>
                                             <xctk:UIntegerUpDown Text="0" Name="Document_Height" ValueChanged="Document_Height_ValueChanged"/>
                                             <TextBlock Text="mm" FontSize="12"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
-                                            <TextBlock Text="Orientación: " FontSize="12"/>
+                                            <TextBlock Text="{DynamicResource orientacion}" FontSize="12"/>
                                             <ComboBox>
-                                                <ComboBoxItem Content="Horizontal" Name="document_Horizontal" 
+                                                <ComboBoxItem Content="{DynamicResource horizontal}" Name="document_Horizontal" 
                                                               Selected="document_Horizontal_Selected"/>
-                                                <ComboBoxItem Content="Vertical" IsSelected="True" Name="document_Vertical"
+                                                <ComboBoxItem Content="{DynamicResource vertical}" IsSelected="True" Name="document_Vertical"
                                                               Selected="document_Vertical_Selected"/>
                                             </ComboBox>
                                         </StackPanel>
@@ -507,6 +512,13 @@
 
             </StackPanel>
         </ScrollViewer>
+        <ComboBox Text="{DynamicResource lenguaje}" IsEditable="True" IsReadOnly="True" Grid.Column="4" Margin="20">
+            <ComboBoxItem Content="Español" Name="español" Selected="español_Selected"/>
+            <ComboBoxItem Content="English" Name="ingles" Selected="ingles_Selected"/>
+            <ComboBoxItem Content="Italiano" Name="italiano" Selected="italiano_Selected"/>
+            <ComboBoxItem Content="Français" Name="frances" Selected="frances_Selected"/>
+            <ComboBoxItem Content="Deutsch" Name="aleman" Selected="aleman_Selected"/>
+        </ComboBox>
 
         <ScrollViewer Grid.Column="0" Grid.Row="1"  ScrollViewer.HorizontalScrollBarVisibility="Auto" Margin="0,0,6,0">
             <StackPanel Grid.Column="0" Grid.Row="1" Margin="10,10,10,10" Background="CadetBlue" >

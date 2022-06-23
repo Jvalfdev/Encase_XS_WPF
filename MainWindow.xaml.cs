@@ -1,4 +1,4 @@
-﻿//Faltan probar el grabado de lineas en el xml de logo y sello
+﻿//
 //Encase_XS_WPFVersion
 //Autor: Jose Vallejo Fernandez
 //Grupo Epelsa
@@ -3905,7 +3905,7 @@ namespace Encase_XS_WPF
 
         }
         #endregion
-
+        #region Funciones que eligen el idioma
         private void español_Selected(object sender, RoutedEventArgs e)
         {
             SetLanguageDictionaryManual("es");
@@ -3931,5 +3931,6 @@ namespace Encase_XS_WPF
         {
             SetLanguageDictionaryManual("de");
         }
+        #endregion
     }
 }

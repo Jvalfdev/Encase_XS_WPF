@@ -69,25 +69,25 @@
                 </Border>
             </DockPanel>-->
             <DockPanel Height="50">
-                
+
                 <Border>
 
                     <ToolBar Margin="0,-10,0,-12" VerticalContentAlignment="Bottom">
-                        <Button  Name="Nueva_Etiqueta" Click="Nueva_Etiqueta_Click" Width="110">
+                        <Button  Name="Nueva_Etiqueta" Click="Nueva_Etiqueta_Click" VerticalContentAlignment="Bottom" Height="56">
                             <StackPanel>
-                                <Image Source="Resource/new-file.png" Height="27" Width="85"/>
+                                <Image Source="Resource/new-file.png" Height="29" Width="30" />
                                 <TextBlock Text="{DynamicResource nueva_etiqueta}"/>
                             </StackPanel>
                         </Button>
-                        <Button Name="Abrir_Etiqueta" Click="Abrir_Etiqueta_Click" Width="110">
+                        <Button Name="Abrir_Etiqueta" Click="Abrir_Etiqueta_Click" VerticalContentAlignment="Bottom" Height="53">
                             <StackPanel>
-                                <Image Source="Resource/open_file.png" Height="29" Width="73"/>
+                                <Image Source="Resource/open_file.png" />
                                 <TextBlock Text="{DynamicResource abrir_etiqueta}"/>
                             </StackPanel>
                         </Button>
-                        <Button Name="Guardar_Etiqueta" Click="Guardar_Etiqueta_Click" Width="150" >
+                        <Button Name="Guardar_Etiqueta" Click="Guardar_Etiqueta_Click" VerticalContentAlignment="Bottom" Height="56">
                             <StackPanel>
-                                <Image Source="Resource/save.png" Height="31" Width="39"/>
+                                <Image Source="Resource/save.png" Height="28" Width="41" />
                                 <TextBlock Text="{DynamicResource guardar_etiqueta}"/>
                             </StackPanel>
                         </Button>
@@ -100,40 +100,40 @@
                     <Button Content="Añadir Diseño" Name="Add_Design" Click="Add_Design_Click"/>
                     <Button Content="Eliminar Diseño" Name="Delete_Design" Click="Delete_Design_Click" />-->
                         <Separator/>
-                        <Button Name="Add_Texto" Click="Add_Texto_Click" Width="110">
+                        <Button Name="Add_Texto" Click="Add_Texto_Click" VerticalContentAlignment="Bottom">
                             <StackPanel>
-                                <Image Source="Resource/add_inputtext.png" Height="31" Width="39"/>
+                                <Image Source="Resource/add_inputtext.png" />
                                 <TextBlock Text="{DynamicResource añadir_texto}"/>
                             </StackPanel>
                         </Button>
-                        <Button Name="Add_Campo" Click="Add_Campo_Click" Width="110">
+                        <Button Name="Add_Campo" Click="Add_Campo_Click" VerticalContentAlignment="Bottom">
                             <StackPanel>
-                                <Image Source="Resource/add_textlabel.png" Height="31" Width="39"/>
+                                <Image Source="Resource/add_textlabel.png" />
                                 <TextBlock Text="{DynamicResource añadir_campo}"/>
                             </StackPanel>
                         </Button>
-                        <Button Name="Add_Cajeado" Click="Add_Cajeado_Click" Width="100">
+                        <Button Name="Add_Cajeado" Click="Add_Cajeado_Click" VerticalContentAlignment="Bottom">
                             <StackPanel>
-                                <Image Source="Resource/inputtext.png" Height="31" Width="39"/>
+                                <Image Source="Resource/inputtext.png" />
                                 <TextBlock Text="{DynamicResource añadir_cajeado}"/>
                             </StackPanel>
                         </Button>
-                        <Button Name ="Add_Imagen" Click="Add_Imagen_Click" Width="100">
+                        <Button Name ="Add_Imagen" Click="Add_Imagen_Click" VerticalContentAlignment="Bottom">
                             <StackPanel>
-                                <Image Source="Resource/logo_background.png" Height="31" Width="39"/>
+                                <Image Source="Resource/logo_background.png" />
                                 <TextBlock Text="{DynamicResource añadir_imagen}" HorizontalAlignment="Center"/>
                             </StackPanel>
                         </Button>
-                        <Button Name="Add_Sello" Click="Add_Sello_Click" Width="100">
+                        <Button Name="Add_Sello" Click="Add_Sello_Click" VerticalContentAlignment="Bottom">
                             <StackPanel>
-                                <Image Source="Resource/add_sello.png" Height="31" Width="39"/>
-                                <TextBlock Text="{DynamicResource añadir_sello}"/>
+                                <Image Source="Resource/add_sello.png" />
+                                <TextBlock Text="{DynamicResource añadir_sello}" />
                             </StackPanel>
                         </Button>
-                        <Button Name="Add_Barcode" Click="Add_Barcode_Click" Width="160">
+                        <Button Name="Add_Barcode" Click="Add_Barcode_Click" VerticalContentAlignment="Bottom">
                             <StackPanel>
                                 <Image Source="Resource/add_barcode.png" Height="31" Width="39"/>
-                                <TextBlock Text="{DynamicResource añadir_codigo}" TextWrapping="Wrap"/>
+                                <TextBlock Text="{DynamicResource añadir_codigo}"/>
                             </StackPanel>
                         </Button>
                         <Separator Margin="10"/>

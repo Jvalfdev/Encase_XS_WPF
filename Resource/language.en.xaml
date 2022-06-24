@@ -7,7 +7,7 @@
     <system:String x:Key="guardar">Save</system:String>
     <system:String x:Key="Abrir">Open</system:String>
     <system:String x:Key="nueva_etiqueta">New Document</system:String>
-    <system:String x:Key="abrir_etiqueta">Save Document</system:String>
+    <system:String x:Key="abrir_etiqueta">Open Document</system:String>
     <system:String x:Key="guardar_etiqueta">Save Document</system:String>
     <system:String x:Key="añadir_texto">Add Text</system:String>
     <system:String x:Key="añadir_imagen">Add Logo</system:String>

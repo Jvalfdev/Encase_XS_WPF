@@ -25,6 +25,7 @@ using System.IO;
 using System.ComponentModel;
 using System.Reflection;
 using System.Threading;
+using Path = System.IO.Path;
 
 enum types_items { none = 0, lbl, field, logo, box, barcode, seal};
 namespace Encase_XS_WPF
@@ -265,8 +266,6 @@ namespace Encase_XS_WPF
             cnv2.Margin.Equals(5);
             cnv1.Margin.Top.Equals(5);
             cnv2.Margin.Top.Equals(5);
-            //Actualiza la TextBox de nombre de documento con el nombre que le hayamos dado en la ventana
-            Nombre_Tipo_Documento.Text = m_nombre_Etiqueta;
             //Cambia el tamaño de la regla y su valor máximo para que sea igual al del canvas
             ruler1h.Width = cnv1.Width + 6;
             ruler1v.Height = cnv1.Height + 6;
@@ -394,13 +393,14 @@ namespace Encase_XS_WPF
                         else if (l_strField == "units") { }
                         else if (l_strField == "auto_offset") { }
                     }
-
+                    
                     if ((l_strOrientation == "portrait") || (l_strOrientation == "Portrait") || (l_strOrientation == "PORTRAIT"))
                         labelOrientation = "portrait";
                     else if ((l_strOrientation == "landscape") || (l_strOrientation == "Landscape") || (l_strOrientation == "LANDSCAPE"))
                         labelOrientation = "landscape";
                     l_strOrientation_gen = l_strOrientation;
-                    Nombre_Tipo_Documento.Text = l_strName;
+                    string[] dirName = l_strName.Split(new char[] { '\\', '\\' });
+                    Nombre_Tipo_Documento.Text = dirName.Last(); 
                     Document_Width.Text = Convert.ToString(l_iWidth);
                     Document_Height.Text = Convert.ToString(l_iHeight);
 

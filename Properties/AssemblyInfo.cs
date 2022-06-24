@@ -7,11 +7,11 @@ using System.Windows;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TestingWPF")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Encase_XS")]
+[assembly: AssemblyDescription("Creador de etiquetas para TouchScaleXS")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("TestingWPF")]
+[assembly: AssemblyCompany("GrupoEpelsa")]
+[assembly: AssemblyProduct("Encase_XS")]
 [assembly: AssemblyCopyright("Copyright ©  2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
